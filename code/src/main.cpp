@@ -7,7 +7,6 @@
 
 #include "GL_framework.h"
 
-
 extern void PhysicsInit();
 extern void PhysicsUpdate(float dt);
 extern void PhysicsCleanup();
