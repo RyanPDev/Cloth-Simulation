@@ -11,5 +11,7 @@ public:
 	Mesh(int, int);
 
 	int width, height;
+	glm::vec3 initPos;
 
+	glm::vec3* GetSpringForces();
 };

@@ -42,7 +42,6 @@ bool show_test_window = false;
 Emitter emitter;
 Euler euler;
 Mesh mesh;
-//float initialAngle = 0.0f;
 float angle = 0.f;
 int nextParticleIdx = 0.f;
 float timer = 0;
@@ -108,24 +107,26 @@ void PhysicsInit()
 {
 	srand(static_cast<unsigned>(time(nullptr)));
 	renderParticles = true;
-	renderSphere = true;
-	//renderCapsule = true;
 	renderCloth = true;
-	//ps = ParticleSystem(10000);
-	//emitter = Emitter(Emitter::Type::FOUNTAIN);
+	//renderSphere = true;
 	euler = Euler();
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows);
 	Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 	LilSpheres::particleCount = mesh.width * mesh.height;
+	//renderCapsule = true;
+	//ps = ParticleSystem(10000);
+	//emitter = Emitter(Emitter::Type::FOUNTAIN);
 	//Capsule::updateCapsule(euler.capsule.pos[0], euler.capsule.pos[1], euler.capsule.r);
 }
 
 void PhysicsUpdate(float dt)
 {
 	Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
+	timer += dt;
+	ClothMesh::updateClothMesh(&mesh.positions[0].x);
+	LilSpheres::updateParticles(0, mesh.width * mesh.height, &mesh.positions[0].x);
 	//Capsule::updateCapsule(euler.capsule.pos[0], euler.capsule.pos[1], euler.capsule.r);
 	//ps.DestroyOldParticles(maxAge);
-	timer += dt;
 	/*if (ps.maxParticles > maxAge / dt)
 		if (timer >= 1 / emissionRate)
 		{
@@ -140,8 +141,6 @@ void PhysicsUpdate(float dt)
 	//euler.Update(ps, dt);
 	//ps.UpdateLilSpheres();
 	//ps.UpdateAge(dt);
-	ClothMesh::updateClothMesh(&mesh.positions[0].x);
-	LilSpheres::updateParticles(0, mesh.width * mesh.height, &mesh.positions[0].x);
 }
 
 void PhysicsCleanup() {
