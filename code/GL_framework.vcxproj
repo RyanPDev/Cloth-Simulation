@@ -147,12 +147,14 @@ xcopy $(ProjectDir)libs\SDL2.dll $(OutDir) /y /d</Command>
     <ClCompile Include="src\physics.cpp" />
     <ClCompile Include="src\render.cpp" />
     <ClCompile Include="src\render_prims.cpp" />
+    <ClCompile Include="Verlet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="Euler.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Verlet.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

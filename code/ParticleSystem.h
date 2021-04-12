@@ -18,6 +18,8 @@ public:
 
 	glm::vec3* positions;
 	glm::vec3* celerities;
+	glm::vec3* positionsBefore;
+	glm::vec3* forces;
 
 	int currentParticles;
 

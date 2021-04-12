@@ -4,6 +4,7 @@
 #include "../Emitter.h"
 #include "../Euler.h"
 #include "../Mesh.h"
+#include "../Verlet.h"
 #include <glm/glm.hpp>
 #include <ctime>
 
@@ -41,6 +42,7 @@ bool show_test_window = false;
 //ParticleSystem ps;
 Emitter emitter;
 Euler euler;
+Verlet verlet;
 Mesh mesh;
 float angle = 0.f;
 int nextParticleIdx = 0.f;
@@ -54,13 +56,13 @@ void GUI() {
 	{
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);//FrameRate
 
-		if (ImGui::CollapsingHeader("Particle System"))
+		/*if (ImGui::CollapsingHeader("Particle System"))
 		{
 			ImGui::InputFloat("Emission rate", &emissionRate, 1.f);
 			ImGui::DragFloat("Max age", &maxAge, 0.05f, 0.5f, 10.f);
-		}
+		}*/
 
-		if (ImGui::CollapsingHeader("Emitter"))
+		/*if (ImGui::CollapsingHeader("Emitter"))
 		{
 			ImGui::DragFloat("Speed", &emitter.speed, 0.05f, 0.f, 20.f);
 
@@ -81,7 +83,7 @@ void GUI() {
 				break;
 			}
 			ImGui::DragFloat3("Direction", (float*)&emitter.direction, 0.05f, -1.f, 1.f);
-		}
+		}*/
 		if (ImGui::CollapsingHeader("Solver"))
 		{
 			ImGui::DragFloat3("Gravedad", (float*)&euler.gravity, 0.05f, -9.8f, 9.8f);
@@ -93,12 +95,12 @@ void GUI() {
 			ImGui::DragFloat3("Shpere Pos", (float*)&euler.sphere.c, 0.05f, -9.8f, 9.8f);
 			ImGui::DragFloat("Sphere Radius", &euler.sphere.r, 0.005f, 0.3f, 5.f);
 		}
-		if (ImGui::CollapsingHeader("Capsule"))
+		/*if (ImGui::CollapsingHeader("Capsule"))
 		{
 			ImGui::DragFloat3("Capsule Pos 1", (float*)&euler.capsule.pos[0], 0.05f, -9.8f, 9.8f);
 			ImGui::DragFloat3("Capsule Pos 2", (float*)&euler.capsule.pos[1], 0.05f, -9.8f, 9.8f);
 			ImGui::DragFloat("Capsule Radius", &euler.capsule.r, 0.005f, 0.3f, 5.f);
-		}
+		}*/
 	}
 	ImGui::End();
 }

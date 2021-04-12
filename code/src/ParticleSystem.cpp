@@ -13,6 +13,7 @@ currentParticles(0)
 {
 	positions = new glm::vec3[maxParticles];
 	celerities = new glm::vec3[maxParticles];
+	forces = new glm::vec3[maxParticles];
 	age = new float[maxParticles];
 }
 
