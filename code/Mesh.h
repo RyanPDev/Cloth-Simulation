@@ -1,5 +1,6 @@
 #pragma once
 #include "ParticleSystem.h"
+#include <glm/glm.hpp>
 
 class Mesh : public ParticleSystem
 {
@@ -13,5 +14,7 @@ public:
 	int width, height;
 	glm::vec3 initPos;
 
-	glm::vec3* GetSpringForces();
+	float ke, kb, ks;
+
+	void GetSpringForces();
 };

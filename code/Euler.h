@@ -1,6 +1,5 @@
 #pragma once
 #include "ParticleSystem.h"
-#include <vector>
 #include <glm/glm.hpp> 
 
 class Euler

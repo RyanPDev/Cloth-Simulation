@@ -4,11 +4,13 @@ Verlet::Verlet() {}
 
 void Verlet::Update(Mesh& mesh, float dt)
 {
-		mesh.GetSpringForces();
-	for (int i = 0; i < mesh.maxParticles; i++)
+	float d = glm::pow(dt, 2);
+	glm::vec3 auxPos;
+	mesh.GetSpringForces();
+	for (int i = 0; i < 2; i++)
 	{
-		mesh.forces[i];
-		mesh.positions[i] = 0;
-		mesh.celerities[i] = 0;
+		auxPos = mesh.positions[i];
+		mesh.positions[i] = mesh.positions[i] + (mesh.positions[i] - mesh.positionsBefore[i]) + mesh.forces[i] * d;
+		mesh.positionsBefore[i] = auxPos;
 	}
 }

@@ -9,5 +9,5 @@ private:
 public:
 	Verlet();
 
-	void Update();
+	void Update(Mesh&, float);
 };

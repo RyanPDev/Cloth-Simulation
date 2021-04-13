@@ -127,6 +127,7 @@ void PhysicsUpdate(float dt)
 	timer += dt;
 	ClothMesh::updateClothMesh(&mesh.positions[0].x);
 	LilSpheres::updateParticles(0, mesh.width * mesh.height, &mesh.positions[0].x);
+	verlet.Update(mesh, dt);
 	//Capsule::updateCapsule(euler.capsule.pos[0], euler.capsule.pos[1], euler.capsule.r);
 	//ps.DestroyOldParticles(maxAge);
 	/*if (ps.maxParticles > maxAge / dt)
