@@ -1,12 +1,13 @@
 #include <imgui\imgui.h>
 #include <imgui\imgui_impl_sdl_gl3.h>
 #include "../ParticleSystem.h"
-#include "../Emitter.h"
 #include "../Euler.h"
 #include "../Mesh.h"
 #include "../Verlet.h"
 #include <glm/glm.hpp>
 #include <ctime>
+#include <string>
+#include <sstream>
 
 //Exemple
 extern void Exemple_GUI();
@@ -40,15 +41,25 @@ extern bool renderCloth;
 bool show_test_window = false;
 
 //ParticleSystem ps;
-Emitter emitter;
+//Emitter emitter;
 Euler euler;
 Verlet verlet;
 Mesh mesh;
 float angle = 0.f;
 int nextParticleIdx = 0.f;
 float timer = 0;
+float resetTimer = 5;
+bool autoReset = false;
 float emissionRate = 500.f; // Particles/second
 float maxAge = 1.f; // Seconds
+std::string t;
+void ResetSimulation()
+{
+	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows);
+	verlet = Verlet();
+	//Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
+	timer = 0;
+}
 
 void GUI() {
 	bool show = true;
@@ -84,17 +95,44 @@ void GUI() {
 			}
 			ImGui::DragFloat3("Direction", (float*)&emitter.direction, 0.05f, -1.f, 1.f);
 		}*/
-		if (ImGui::CollapsingHeader("Solver"))
+		if (ImGui::CollapsingHeader("Verlet solver"))
 		{
-			ImGui::DragFloat3("Gravedad", (float*)&euler.gravity, 0.05f, -9.8f, 9.8f);
-			ImGui::DragFloat("Elasticidad", &euler.reboundCoefficient, 0.005f, 0.01f, 1.f);
-			ImGui::DragFloat("Friccion", &euler.frictionCoefficient, 0.005f, 0.f, 1.f);
+			ImGui::DragFloat3("Gravity", (float*)&verlet.gravity, 0.05f, -9.8f, 9.8f);
+			//ImGui::DragFloat("Elasticidad", &euler.reboundCoefficient, 0.005f, 0.01f, 1.f);
+			//ImGui::DragFloat("Friccion", &euler.frictionCoefficient, 0.005f, 0.f, 1.f);
 		}
-		if (ImGui::CollapsingHeader("Sphere"))
+		if (ImGui::CollapsingHeader("Spring's constants"))
+		{
+			ImGui::DragFloat("K stretch", (float*)&mesh.kEStretch, 5.f, 1, 1500.f);
+			ImGui::DragFloat("K shear", (float*)&mesh.kEShear, 5.f, 1, 1500.f);
+			ImGui::DragFloat("K bending", (float*)&mesh.kEBend, 5.f, 1, 1500.f);
+		}
+		
+		if (ImGui::CollapsingHeader("Spring's dampings"))
+		{
+			ImGui::DragFloat("Stretch damping", (float*)&mesh.stretchDamping, 0.5f, 1.f, 100.f);
+			ImGui::DragFloat("Shear damping", (float*)&mesh.shearDamping, 0.5f, 1.f, 100.f);
+			ImGui::DragFloat("Bend damping", (float*)&mesh.bendDamping, 0.5f, 1.f, 100.f);
+		}
+		ImGui::DragFloat("Stretch rest length", (float*)&mesh.LStretch, 0.005f, 0.1, 1.f);
+
+		ImGui::Checkbox("Show sphere", &renderSphere);
+		if (renderSphere)
 		{
 			ImGui::DragFloat3("Shpere Pos", (float*)&euler.sphere.c, 0.05f, -9.8f, 9.8f);
 			ImGui::DragFloat("Sphere Radius", &euler.sphere.r, 0.005f, 0.3f, 5.f);
 		}
+
+		t = "Autoreset simulation: " + std::to_string(resetTimer) + "s";
+		ImGui::Checkbox(t.c_str(), &autoReset);
+		if (autoReset)
+			ImGui::DragFloat("Autoreset timer", (float*)&resetTimer, 0.05f, 5.f, 10.f);
+
+		if (ImGui::Button("Reset simulation"))
+		{
+			ResetSimulation();
+		}
+
 		/*if (ImGui::CollapsingHeader("Capsule"))
 		{
 			ImGui::DragFloat3("Capsule Pos 1", (float*)&euler.capsule.pos[0], 0.05f, -9.8f, 9.8f);
@@ -110,10 +148,10 @@ void PhysicsInit()
 	srand(static_cast<unsigned>(time(nullptr)));
 	renderParticles = true;
 	renderCloth = true;
-	//renderSphere = true;
+	renderSphere = false;
 	euler = Euler();
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows);
-	Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
+	//Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 	//LilSpheres::particleCount = mesh.width * mesh.height;
 	//renderCapsule = true;
 	//ps = ParticleSystem(10000);
@@ -131,7 +169,11 @@ void PhysicsUpdate(float dt)
 
 	Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 	ClothMesh::updateClothMesh(&mesh.positions[0].x);
-	LilSpheres::updateParticles(0, mesh.width * mesh.height, &mesh.positions[0].x);
+
+	if (autoReset && timer >= resetTimer)
+		ResetSimulation();
+
+	//LilSpheres::updateParticles(0, mesh.width * mesh.height, &mesh.positions[0].x);
 	//Capsule::updateCapsule(euler.capsule.pos[0], euler.capsule.pos[1], euler.capsule.r);
 	//ps.DestroyOldParticles(maxAge);
 	/*if (ps.maxParticles > maxAge / dt)
@@ -146,17 +188,11 @@ void PhysicsUpdate(float dt)
 			timer = 0;
 		}*/
 		//euler.Update(ps, dt);
-		//ps.UpdateLilSpheres();
-		//ps.UpdateAge(dt);
-
-	//PhysicsUpdate(dt) {
-	//	for (i in[0, X subpassos]{
-	//	update_physics(dt / X) < -calc forces, verlet....
-	//		}
-	//		update_cloth // update_lilparticles
-	//}
-
+					//ps.UpdateLilSpheres();
+					//ps.UpdateAge(dt);
 }
+
+
 
 void PhysicsCleanup() {
 }
