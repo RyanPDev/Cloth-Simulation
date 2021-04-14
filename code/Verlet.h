@@ -9,5 +9,7 @@ private:
 public:
 	Verlet();
 
+	glm::vec3 gravity;
+
 	void Update(Mesh&, float);
 };

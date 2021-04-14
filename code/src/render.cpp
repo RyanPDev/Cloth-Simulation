@@ -739,8 +739,8 @@ namespace ClothMesh {
 	GLuint clothVbo[2];
 	GLuint clothShaders[2];
 	GLuint clothProgram;
-	extern const int numCols = 2;
-	extern const int numRows = 2;
+	extern const int numCols = 14;
+	extern const int numRows = 18;
 	extern const int numVerts = numRows * numCols;
 	int numVirtualVerts;
 

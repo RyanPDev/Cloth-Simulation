@@ -135,15 +135,15 @@ void PhysicsUpdate(float dt)
 		{
 			while (timer > 0)
 			{
-				timer -= 1 / emissionRate;				
+				timer -= 1 / emissionRate;
 				emitter.spawn(ps);
 			}
 
 			timer = 0;
 		}*/
-	//euler.Update(ps, dt);
-	//ps.UpdateLilSpheres();
-	//ps.UpdateAge(dt);
+		//euler.Update(ps, dt);
+		//ps.UpdateLilSpheres();
+		//ps.UpdateAge(dt);
 }
 
 void PhysicsCleanup() {
