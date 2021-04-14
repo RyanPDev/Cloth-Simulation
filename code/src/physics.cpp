@@ -114,7 +114,7 @@ void PhysicsInit()
 	euler = Euler();
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows);
 	Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
-	LilSpheres::particleCount = mesh.width * mesh.height;
+	//LilSpheres::particleCount = mesh.width * mesh.height;
 	//renderCapsule = true;
 	//ps = ParticleSystem(10000);
 	//emitter = Emitter(Emitter::Type::FOUNTAIN);
@@ -123,11 +123,15 @@ void PhysicsInit()
 
 void PhysicsUpdate(float dt)
 {
-	Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 	timer += dt;
+	for (int i = 0; i < 10; i++)
+	{
+		verlet.Update(mesh, dt / 10);
+	}
+
+	Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 	ClothMesh::updateClothMesh(&mesh.positions[0].x);
 	LilSpheres::updateParticles(0, mesh.width * mesh.height, &mesh.positions[0].x);
-	verlet.Update(mesh, dt);
 	//Capsule::updateCapsule(euler.capsule.pos[0], euler.capsule.pos[1], euler.capsule.r);
 	//ps.DestroyOldParticles(maxAge);
 	/*if (ps.maxParticles > maxAge / dt)
@@ -144,6 +148,14 @@ void PhysicsUpdate(float dt)
 		//euler.Update(ps, dt);
 		//ps.UpdateLilSpheres();
 		//ps.UpdateAge(dt);
+
+	//PhysicsUpdate(dt) {
+	//	for (i in[0, X subpassos]{
+	//	update_physics(dt / X) < -calc forces, verlet....
+	//		}
+	//		update_cloth // update_lilparticles
+	//}
+
 }
 
 void PhysicsCleanup() {

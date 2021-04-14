@@ -20,7 +20,7 @@ public:
 	float Lstretch, LShear, LBending;
 	glm::vec3 initPos;
 
-	float kEStretch, kEShear, kEBend, stretchDamping, shearDamping, bendDamping, kConstraint;
+	float kEStretch, kEShear, kEBend, stretchDamping, shearDamping, bendDamping;
 
 	void GetSpringForces(glm::vec3);
 };

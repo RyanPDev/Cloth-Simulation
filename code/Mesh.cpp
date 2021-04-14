@@ -5,13 +5,13 @@ float Pitagoras(float x, float y)
 	return glm::sqrt(glm::pow(x, 2) + glm::pow(y, 2));
 }
 
-Mesh::Mesh() : width(10), height(10), kEStretch(1), kEShear(1), kEBend(1), kConstraint(1), stretchDamping(1), shearDamping(1), bendDamping(1), Lstretch(0.2) {
+Mesh::Mesh() : width(10), height(10), kEStretch(1), kEShear(1), kEBend(1), stretchDamping(1), shearDamping(1), bendDamping(1), Lstretch(0.2) {
 	LShear = Pitagoras(Lstretch, Lstretch);
 	LBending = Lstretch * 2;
 }
 
-Mesh::Mesh(int _width, int _height) : kEStretch(30), kEShear(30), kEBend(30), kConstraint(30), stretchDamping(1), shearDamping(1),
-bendDamping(1), width(_width), height(_height), initPos(0, 5, 0), Lstretch(0.2), ParticleSystem(_width* _height)
+Mesh::Mesh(int _width, int _height) : kEStretch(1000), kEShear(1000), kEBend(1000), stretchDamping(50), shearDamping(50),
+bendDamping(50), width(_width), height(_height), initPos(-3.5, 9, 0), Lstretch(0.2), ParticleSystem(_width* _height)
 {
 	LShear = Pitagoras(Lstretch, Lstretch);
 	LBending = Lstretch * 2;
@@ -38,7 +38,7 @@ void Mesh::GetSpringForces(glm::vec3 externalForces)
 		for (int col = 0; col < width; col++)
 		{
 			int particleIdx = GetIndex(row, col);
-			if (particleIdx == 0 || particleIdx == GetIndex(0, width - 1))
+			if (particleIdx == 0 || particleIdx ==  width - 1)
 				forces[particleIdx] = glm::vec3(0, 0, 0);
 			else
 			{
