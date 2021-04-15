@@ -95,6 +95,9 @@ void GUI() {
 			}
 			ImGui::DragFloat3("Direction", (float*)&emitter.direction, 0.05f, -1.f, 1.f);
 		}*/
+
+		ImGui::DragFloat("Stretch rest length", (float*)&mesh.LStretch, 0.005f, 0.1, 1.f);
+
 		if (ImGui::CollapsingHeader("Verlet solver"))
 		{
 			ImGui::DragFloat3("Gravity", (float*)&verlet.gravity, 0.05f, -9.8f, 9.8f);
@@ -113,8 +116,7 @@ void GUI() {
 			ImGui::DragFloat("Stretch damping", (float*)&mesh.stretchDamping, 0.5f, 1.f, 100.f);
 			ImGui::DragFloat("Shear damping", (float*)&mesh.shearDamping, 0.5f, 1.f, 100.f);
 			ImGui::DragFloat("Bend damping", (float*)&mesh.bendDamping, 0.5f, 1.f, 100.f);
-		}
-		ImGui::DragFloat("Stretch rest length", (float*)&mesh.LStretch, 0.005f, 0.1, 1.f);
+		}		
 
 		ImGui::Checkbox("Show sphere", &renderSphere);
 		if (renderSphere)
