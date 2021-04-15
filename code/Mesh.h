@@ -12,7 +12,7 @@ private:
 
 public:
 	Mesh();
-	Mesh(int, int);
+	Mesh(int, int, glm::vec3);
 
 	int width, height;
 	float LStretch, LShear, LBending;
