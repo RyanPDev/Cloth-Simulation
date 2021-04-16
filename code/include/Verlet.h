@@ -1,15 +1,13 @@
 #pragma once
-#include <glm/glm.hpp> 
 #include "Mesh.h"
+#include "Solver.h"
 
-class Verlet
+class Verlet : public Solver
 {
 private:
 
 public:
 	Verlet();
-
-	glm::vec3 gravity;
 
 	void Update(Mesh&, float);
 };

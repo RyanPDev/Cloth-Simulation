@@ -1,6 +1,5 @@
 #pragma once
 #include "ParticleSystem.h"
-#include <glm/glm.hpp>
 
 class Mesh : public ParticleSystem
 {

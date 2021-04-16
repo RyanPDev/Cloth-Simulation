@@ -1,6 +1,5 @@
-#include "..\ParticleSystem.h"
+#include "ParticleSystem.h"
 #include <glm/gtx/string_cast.hpp>
-#include <iostream>
 
 namespace LilSpheres {
 	extern int firstParticleIdx, particleCount;

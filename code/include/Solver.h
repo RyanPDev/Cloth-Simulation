@@ -1,10 +1,14 @@
 #pragma once
-#include "ParticleSystem.h"
-#include <glm/glm.hpp> 
+#include "Mesh.h"
 
-class Euler
+class Solver
 {
-private:
+
+protected:
+	virtual void Update(Mesh&, float) = 0;
+	float GetDistanceFromPlane(int, glm::vec3);
+	glm::vec3 GetCollisionNorm(glm::vec3 collisionPos, glm::vec3 sphereC);
+
 	struct BoxCollider
 	{
 		glm::vec3 pos[2] = { glm::vec3(-5.f, 0.f, -5.f), glm::vec3{5.f, 10.f, 5.f} };
@@ -31,21 +35,12 @@ private:
 		float r = 1.f;
 	};
 
-	int CheckCollisionBox(glm::vec3, glm::vec3);
-	bool CheckCollisionSphere(glm::vec3, glm::vec3, float);
-	void CollisionCilinder(glm::vec3, glm::vec3&, glm::vec3&);
-	void ReboundPlane(glm::vec3&, glm::vec3&, glm::vec3, float);
-	float GetDistanceFromPlane(int, glm::vec3);
-	float GetDFromPlane(glm::vec3, glm::vec3);
-	glm::vec3 GetCollisionPoint(glm::vec3, glm::vec3, glm::vec3, float);
-	glm::vec3 Euler::GetCollisionNorm(glm::vec3, glm::vec3);
 
 public:
-	Euler();
+	Solver();
+	glm::vec3 gravity;
 	float reboundCoefficient = 1.f;
 	float frictionCoefficient = 1.f;
-	glm::vec3 gravity = { 0, -9.8f, 0 };
-	void Update(ParticleSystem& ps, float dt);
 	SphereCollider sphere;
 	CapsuleCollider capsule;
 };

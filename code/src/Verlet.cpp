@@ -1,8 +1,8 @@
 #include "Verlet.h"
 
-Verlet::Verlet() : gravity(0, -9.81, 0) {}
+Verlet::Verlet() : Solver() {}
 
-void Verlet::Update(Mesh& mesh, float dt) 
+void Verlet::Update(Mesh& mesh, float dt)
 {
 	glm::vec3 auxPos;
 

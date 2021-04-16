@@ -1,10 +1,5 @@
 #include "Mesh.h"
 
-float Pitagoras(float x, float y)
-{
-	return glm::sqrt(glm::pow(x, 2) + glm::pow(y, 2));
-}
-
 Mesh::Mesh() : width(10), height(10), kEStretch(1), kEShear(1), kEBend(1), stretchDamping(1), shearDamping(1), bendDamping(1), LStretch(0.5) {
 	LShear = Pitagoras(LStretch, LStretch);
 	LBending = LStretch * 2;
@@ -27,7 +22,6 @@ bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(0.4
 		}
 	}
 }
-
 
 int Mesh::GetIndex(int _row, int _col) { return _row * width + _col; }
 

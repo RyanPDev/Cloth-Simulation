@@ -1,9 +1,8 @@
-#include "..\Euler.h"
-#include <iostream>
+#include "Euler.h"
 
-Euler::Euler() {}
+Euler::Euler() : Solver() {}
 
-void Euler::Update(ParticleSystem& ps, float dt)
+void Euler::Update(Mesh& ps, float dt)
 {
 	glm::vec3 iPos, iV, auxPos, auxV;
 	int counter = 0;
@@ -98,35 +97,21 @@ glm::vec3 Euler::GetCollisionPoint(glm::vec3 iPos, glm::vec3 pos, glm::vec3 sphe
 	return collisionPos;
 }
 
-glm::vec3 Euler::GetCollisionNorm(glm::vec3 collisionPos, glm::vec3 sphereC)
-{
-	return glm::normalize(collisionPos - sphereC);
-}
-
 void Euler::CollisionCilinder(glm::vec3 iPos, glm::vec3& pos, glm::vec3& v)
 {
 	glm::vec3 capsuleVecD = glm::normalize(capsule.pos[1] - capsule.pos[0]);
 	glm::vec3 PQ = (pos - capsule.pos[0]);
 	float lamda = glm::dot(PQ, capsuleVecD);
 	lamda = glm::clamp(lamda, 0.f, glm::distance(capsule.pos[0], capsule.pos[1]));
-	glm::vec3 point =  capsule.pos[0] + lamda * capsuleVecD;
+	glm::vec3 point = capsule.pos[0] + lamda * capsuleVecD;
 	float d3 = glm::distance(pos, point) - capsule.r;
 
-	 if (d3 <= 0)
+	if (d3 <= 0)
 	{
 		glm::vec3 colPos = GetCollisionPoint(iPos, pos, point, capsule.r);
 		glm::vec3 norm = GetCollisionNorm(colPos, point);
 		ReboundPlane(pos, v, norm, GetDFromPlane(colPos, norm));
 	}
-}
-
-float Euler::GetDistanceFromPlane(int plane, glm::vec3 pos)
-{
-	float distance = 0;
-	distance = (glm::abs((box.norms[plane].x * pos.x) + (box.norms[plane].y * pos.y) + (box.norms[plane].z * pos.z) + box.d[plane])) /
-		(glm::sqrt(glm::pow(box.norms[plane].x, 2) + glm::pow(box.norms[plane].y, 2) + glm::pow(box.norms[plane].z, 2)));
-
-	return distance;
 }
 
 void Euler::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)

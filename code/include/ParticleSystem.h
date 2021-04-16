@@ -1,5 +1,5 @@
 #pragma once
-#include <glm/vec3.hpp>
+#include "Utils.h"
 
 class ParticleSystem
 {

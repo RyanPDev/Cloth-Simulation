@@ -1,10 +1,9 @@
 #include <imgui\imgui.h>
 #include <imgui\imgui_impl_sdl_gl3.h>
-#include "../ParticleSystem.h"
-#include "../Euler.h"
-#include "../Mesh.h"
-#include "../Verlet.h"
-#include <glm/glm.hpp>
+#include "ParticleSystem.h"
+#include "Euler.h"
+#include "Mesh.h"
+#include "Verlet.h"
 #include <ctime>
 #include <string>
 #include <sstream>
@@ -126,8 +125,8 @@ void GUI() {
 
 		if (renderSphere)
 		{
-			ImGui::DragFloat3("Shpere Pos", (float*)&euler.sphere.c, 0.05f, -9.8f, 9.8f);
-			ImGui::DragFloat("Sphere Radius", &euler.sphere.r, 0.005f, 0.3f, 5.f);
+			ImGui::DragFloat3("Shpere Pos", (float*)&verlet.sphere.c, 0.05f, -9.8f, 9.8f);
+			ImGui::DragFloat("Sphere Radius", &verlet.sphere.r, 0.005f, 0.3f, 5.f);
 		}
 
 		t = "Autoreset simulation: " + std::to_string(resetTimer) + "s";
@@ -169,6 +168,7 @@ void PhysicsInit()
 	renderCloth = true;
 	renderSphere = false;
 	euler = Euler();
+	verlet = Verlet();
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9, 0));
 	//Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 	//LilSpheres::particleCount = mesh.width * mesh.height;
@@ -184,9 +184,10 @@ void PhysicsUpdate(float dt)
 	for (int i = 0; i < 10; i++)
 	{
 		verlet.Update(mesh, dt / 10);
+		//euler.Update(mesh, dt / 10);
 	}
 
-	Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
+	Sphere::updateSphere(verlet.sphere.c, verlet.sphere.r); //Verlet? Euler?
 	ClothMesh::updateClothMesh(&mesh.positions[0].x);
 
 	if (autoReset && timer >= resetTimer) ResetSimulation();
