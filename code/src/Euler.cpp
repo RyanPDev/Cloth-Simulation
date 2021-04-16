@@ -53,23 +53,6 @@ bool Euler::CheckCollisionSphere(glm::vec3 pos, glm::vec3 sphereCenter, float ra
 	return (glm::abs(glm::distance(sphereCenter, pos)) - radius <= 0);
 }
 
-//void Euler::CollisionCilinder(glm::vec3 iPos, glm::vec3& pos, glm::vec3& v)
-//{
-//	glm::vec3 capsuleVecD = glm::normalize(capsule.pos[1] - capsule.pos[0]);
-//	glm::vec3 PQ = (pos - capsule.pos[0]);
-//	float lamda = glm::dot(PQ, capsuleVecD);
-//	lamda = glm::clamp(lamda, 0.f, glm::distance(capsule.pos[0], capsule.pos[1]));
-//	glm::vec3 point = capsule.pos[0] + lamda * capsuleVecD;
-//	float d3 = glm::distance(pos, point) - capsule.r;
-//
-//	if (d3 <= 0)
-//	{
-//		glm::vec3 colPos = GetCollisionPoint(iPos, pos, point, capsule.r);
-//		glm::vec3 norm = GetCollisionNorm(colPos, point);
-//		ReboundPlane(pos, v, norm, GetDFromPlane(colPos, norm));
-//	}
-//}
-
 void Euler::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
 {
 	p = p - ((1 + reboundCoefficient) * (glm::dot(n, p) + d) * n);
