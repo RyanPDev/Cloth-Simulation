@@ -41,6 +41,7 @@ bool show_test_window = false;
 
 //ParticleSystem ps;
 //Emitter emitter;
+Solver solver;
 Euler euler;
 Verlet verlet;
 Mesh mesh;
@@ -60,6 +61,8 @@ void ResetSimulation()
 	timer = 0;
 	if (!changeClothPos) mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9, 4.5));
 	else mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9, 0));
+	solver = Solver();
+	euler = Euler();	
 	verlet = Verlet();
 	//Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 }
@@ -103,9 +106,9 @@ void GUI() {
 
 		if (ImGui::CollapsingHeader("Verlet solver"))
 		{
-			ImGui::DragFloat3("Gravity", (float*)&verlet.gravity, 0.05f, -9.81f, 9.81f);
-			//ImGui::DragFloat("Elasticidad", &euler.reboundCoefficient, 0.005f, 0.01f, 1.f);
-			//ImGui::DragFloat("Friccion", &euler.frictionCoefficient, 0.005f, 0.f, 1.f);
+			ImGui::DragFloat3("Gravity", (float*)&solver.gravity, 0.05f, -9.81f, 9.81f);
+			//ImGui::DragFloat("Elasticidad", &solver.reboundCoefficient, 0.005f, 0.01f, 1.f);
+			//ImGui::DragFloat("Friccion", &solver.frictionCoefficient, 0.005f, 0.f, 1.f);
 		}
 		if (ImGui::CollapsingHeader("Spring's constants"))
 		{
@@ -123,10 +126,10 @@ void GUI() {
 
 		ImGui::Checkbox("Show sphere", &renderSphere);
 
-		if (renderSphere)
+		if (renderSphere) //VERLET?? EULER??
 		{
-			ImGui::DragFloat3("Shpere Pos", (float*)&verlet.sphere.c, 0.05f, -9.8f, 9.8f);
-			ImGui::DragFloat("Sphere Radius", &verlet.sphere.r, 0.005f, 0.3f, 5.f);
+			ImGui::DragFloat3("Shpere Pos", (float*)&solver.sphere.c, 0.05f, -9.8f, 9.8f);
+			ImGui::DragFloat("Sphere Radius", &solver.sphere.r, 0.005f, 0.3f, 5.f);
 		}
 
 		t = "Autoreset simulation: " + std::to_string(resetTimer) + "s";
@@ -167,6 +170,7 @@ void PhysicsInit()
 	renderParticles = true;
 	renderCloth = true;
 	renderSphere = false;
+	solver = Solver();
 	euler = Euler();
 	verlet = Verlet();
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9, 0));
@@ -187,7 +191,7 @@ void PhysicsUpdate(float dt)
 		//euler.Update(mesh, dt / 10);
 	}
 
-	Sphere::updateSphere(verlet.sphere.c, verlet.sphere.r); //Verlet? Euler?
+	Sphere::updateSphere(solver.sphere.c, solver.sphere.r); //VERLET?? EULER??
 	ClothMesh::updateClothMesh(&mesh.positions[0].x);
 
 	if (autoReset && timer >= resetTimer) ResetSimulation();

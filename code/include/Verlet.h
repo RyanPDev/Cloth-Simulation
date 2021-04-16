@@ -6,6 +6,7 @@ class Verlet : public Solver
 {
 private:
 
+
 public:
 	Verlet();
 

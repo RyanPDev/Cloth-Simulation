@@ -2,43 +2,36 @@
 
 Euler::Euler() : Solver() {}
 
-void Euler::Update(Mesh& ps, float dt)
+void Euler::Update(Mesh& mesh, float dt)
 {
 	glm::vec3 iPos, iV, auxPos, auxV;
 	int counter = 0;
 	// per cada partícula
-	for (int i = 0; i < ps.currentParticles; i++)
+	for (int i = 0; i < mesh.currentParticles; i++)
 	{
-		iPos = ps.positions[i];
-		iV = ps.celerities[i];
+		iPos = mesh.positions[i];
+		iV = mesh.celerities[i];
 
-		ps.positions[i] = ps.positions[i] + ps.celerities[i] * dt;
-		ps.celerities[i] = ps.celerities[i] + (gravity * dt);
+		mesh.positions[i] = mesh.positions[i] + mesh.celerities[i] * dt;
+		mesh.celerities[i] = mesh.celerities[i] + (gravity * dt);
 
 		// Collision Sphere
-		if (CheckCollisionSphere(ps.positions[i], sphere.c, sphere.r))
+		if (CheckCollisionSphere(mesh.positions[i], sphere.c, sphere.r))
 		{
-			glm::vec3 colPos = GetCollisionPoint(iPos, ps.positions[i], sphere.c, sphere.r);
+			glm::vec3 colPos = GetCollisionPoint(iPos, mesh.positions[i], sphere.c, sphere.r);
 			glm::vec3 norm = GetCollisionNorm(colPos, sphere.c);
-			ReboundPlane(ps.positions[i], ps.celerities[i], norm, GetDFromPlane(colPos, norm));
+			ReboundPlane(mesh.positions[i], mesh.celerities[i], norm, GetDFromPlane(colPos, norm));
 		}
 
 		// Collision Capsule
-		CollisionCilinder(iPos, ps.positions[i], ps.celerities[i]);
+		//CollisionCilinder(iPos, mesh.positions[i], mesh.celerities[i]);
 
-		while (CheckCollisionBox(iPos, ps.positions[i]) < 6)
+		while (CheckCollisionBox(iPos, mesh.positions[i]) < 6)
 		{
-			int collidedPlane = CheckCollisionBox(iPos, ps.positions[i]);
-			ReboundPlane(ps.positions[i], ps.celerities[i], box.norms[collidedPlane], box.d[collidedPlane]);
+			int collidedPlane = CheckCollisionBox(iPos, mesh.positions[i]);
+			ReboundPlane(mesh.positions[i], mesh.celerities[i], box.norms[collidedPlane], box.d[collidedPlane]);
 		}
 	}
-}
-
-float Euler::GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal)
-{
-	return -(collisionPos.x * normal.x) -
-		(collisionPos.y * normal.y) -
-		(collisionPos.z * normal.z);
 }
 
 int Euler::CheckCollisionBox(glm::vec3 iPos, glm::vec3 pos)
@@ -58,43 +51,6 @@ int Euler::CheckCollisionBox(glm::vec3 iPos, glm::vec3 pos)
 bool Euler::CheckCollisionSphere(glm::vec3 pos, glm::vec3 sphereCenter, float radius)
 {
 	return (glm::abs(glm::distance(sphereCenter, pos)) - radius <= 0);
-}
-
-glm::vec3 Euler::GetCollisionPoint(glm::vec3 iPos, glm::vec3 pos, glm::vec3 sphereC, float sphereR)
-{
-	float a = 0, b = 0, c = 0, delta = 0, lambda = 0;
-	glm::vec3 vD = pos - iPos;
-	glm::vec3 collisionPos;
-
-	a = glm::pow(vD.x, 2) + glm::pow(vD.y, 2) + glm::pow(vD.z, 2);
-	b = 2 * glm::dot(iPos - sphereC, vD);
-	c = glm::pow((iPos.x - sphereC.x), 2) + glm::pow((iPos.y - sphereC.y), 2) + glm::pow((iPos.z - sphereC.z), 2) - glm::pow(sphereR, 2);
-
-	delta = glm::pow(b, 2) - (4 * a * c);
-	if (delta == 0)
-	{
-		lambda = -b / (2 * a);
-		collisionPos.x = iPos.x + lambda * vD.x;
-		collisionPos.y = iPos.y + lambda * vD.y;
-		collisionPos.z = iPos.z + lambda * vD.z;
-	}
-	else if (delta > 0)
-	{
-		lambda = (-b - glm::sqrt(delta)) / (2 * a);
-		collisionPos.x = iPos.x + lambda * vD.x;
-		collisionPos.y = iPos.y + lambda * vD.y;
-		collisionPos.z = iPos.z + lambda * vD.z;
-
-		if (glm::dot(collisionPos, iPos) < 0) // el angulo es agudo
-		{
-			lambda = (-b + glm::sqrt(delta)) / (2 * a);
-			collisionPos.x = iPos.x + lambda * vD.x;
-			collisionPos.y = iPos.y + lambda * vD.y;
-			collisionPos.z = iPos.z + lambda * vD.z;
-		}
-	}
-
-	return collisionPos;
 }
 
 void Euler::CollisionCilinder(glm::vec3 iPos, glm::vec3& pos, glm::vec3& v)

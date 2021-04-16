@@ -6,7 +6,7 @@ Mesh::Mesh() : width(10), height(10), kEStretch(1), kEShear(1), kEBend(1), stret
 }
 
 Mesh::Mesh(int _width, int _height, glm::vec3 _initPos) : kEStretch(1000), kEShear(1000), kEBend(1000), stretchDamping(50), shearDamping(50),
-bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(0.4), ParticleSystem(_width* _height)
+bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(0.4), ParticleSystem(_width * _height)
 {
 	LShear = Pitagoras(LStretch, LStretch);
 	LBending = LStretch * 2;
