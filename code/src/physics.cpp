@@ -60,7 +60,7 @@ std::string t;
 void ResetSimulation()
 {
 	timer = 0;
-	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9, 4.5));
+	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), mesh.LStretch);
 	solver = Solver(solver.sphere.c, solver.sphere.r);
 	euler = Euler();
 	verlet = Verlet();
@@ -128,19 +128,22 @@ void GUI() {
 			}
 		}
 
-		if (ImGui::CollapsingHeader("Spring's constants"))
+		if (ImGui::CollapsingHeader("Spring parameters"))
 		{
-			ImGui::DragFloat("K stretch", (float*)&mesh.kEStretch, 5.f, 1, 2000.f);
-			ImGui::DragFloat("K shear", (float*)&mesh.kEShear, 5.f, 1, 2000.f);
-			ImGui::DragFloat("K bending", (float*)&mesh.kEBend, 5.f, 1, 2000.f);
-		}
+			if (ImGui::CollapsingHeader("Spring's constants"))
+			{
+				ImGui::DragFloat("K stretch", (float*)&mesh.kEStretch, 5.f, 1, 2000.f);
+				ImGui::DragFloat("K shear", (float*)&mesh.kEShear, 5.f, 1, 2000.f);
+				ImGui::DragFloat("K bending", (float*)&mesh.kEBend, 5.f, 1, 2000.f);
+			}
 
-		if (ImGui::CollapsingHeader("Spring's dampings"))
-		{
-			ImGui::DragFloat("Stretch damping", (float*)&mesh.stretchDamping, 0.5f, 0.f, 100.f);
-			ImGui::DragFloat("Shear damping", (float*)&mesh.shearDamping, 0.5f, 0.f, 100.f);
-			ImGui::DragFloat("Bend damping", (float*)&mesh.bendDamping, 0.5f, 0.f, 100.f);
-		}		
+			if (ImGui::CollapsingHeader("Spring's dampings"))
+			{
+				ImGui::DragFloat("Stretch damping", (float*)&mesh.stretchDamping, 0.5f, 0.f, 100.f);
+				ImGui::DragFloat("Shear damping", (float*)&mesh.shearDamping, 0.5f, 0.f, 100.f);
+				ImGui::DragFloat("Bend damping", (float*)&mesh.bendDamping, 0.5f, 0.f, 100.f);
+			}
+		}
 
 		t = "Autoreset simulation: " + std::to_string(resetTimer) + "s";
 		ImGui::Checkbox(t.c_str(), &autoReset);
@@ -168,7 +171,7 @@ void PhysicsInit()
 	solver = Solver();
 	euler = Euler();
 	verlet = Verlet();
-	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9, 4.5));
+	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), 0.4);
 	//Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 	//LilSpheres::particleCount = mesh.width * mesh.height;
 
