@@ -18,9 +18,11 @@ private:
 
 public:
 	Solver();
+	Solver(glm::vec3, float);
 	glm::vec3 gravity;
 	float reboundCoefficient;
 	float frictionCoefficient;
+	bool useCollision;
 	SphereCollider sphere;
 	CapsuleCollider capsule;
 

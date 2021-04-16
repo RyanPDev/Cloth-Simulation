@@ -1,6 +1,12 @@
 #include "Solver.h"
 
-Solver::Solver() : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1) {}
+Solver::Solver() : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1), useCollision(false) {}
+
+Solver::Solver(glm::vec3 spherePos, float sphereRadius) : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1), useCollision(false)
+{
+	sphere.c = spherePos;
+	sphere.r = sphereRadius;
+}
 
 float Solver::GetDistanceFromPlane(int plane, glm::vec3 pos)
 {
