@@ -61,7 +61,7 @@ void ResetSimulation()
 {
 	timer = 0;
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), mesh.LStretch);
-	solver = Solver(solver.sphere.c, solver.sphere.r);
+	solver = Solver(solver.sphere.c, solver.sphere.r, solver.useCollision);
 	euler = Euler();
 	verlet = Verlet();
 }
@@ -171,7 +171,7 @@ void PhysicsInit()
 	solver = Solver();
 	euler = Euler();
 	verlet = Verlet();
-	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), 0.4);
+	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), 0.5);
 	//Sphere::updateSphere(euler.sphere.c, euler.sphere.r);
 	//LilSpheres::particleCount = mesh.width * mesh.height;
 
@@ -191,7 +191,6 @@ void PhysicsUpdate(float dt)
 			verlet.Update(mesh, dt / 10);
 			//euler.Update(mesh, dt / 10);
 		}
-
 
 		if (autoReset && timer >= resetTimer) ResetSimulation();
 	}

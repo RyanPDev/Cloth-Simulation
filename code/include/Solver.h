@@ -18,7 +18,7 @@ private:
 
 public:
 	Solver();
-	Solver(glm::vec3, float);
+	Solver(glm::vec3, float, bool);
 	glm::vec3 gravity;
 	float reboundCoefficient;
 	float frictionCoefficient;

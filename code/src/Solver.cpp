@@ -2,7 +2,7 @@
 
 Solver::Solver() : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1), useCollision(false) {}
 
-Solver::Solver(glm::vec3 spherePos, float sphereRadius) : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1), useCollision(false)
+Solver::Solver(glm::vec3 spherePos, float sphereRadius, bool _collision) : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1), useCollision(_collision)
 {
 	sphere.c = spherePos;
 	sphere.r = sphereRadius;
