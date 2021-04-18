@@ -18,11 +18,13 @@ private:
 
 public:
 	Solver();
-	Solver(glm::vec3, float, bool);
+	Solver(glm::vec3, float, float, float);
+
+	virtual void Update(Mesh&, float) = 0;
+
 	glm::vec3 gravity;
 	float reboundCoefficient;
 	float frictionCoefficient;
-	bool useCollision;
 	SphereCollider sphere;
 	CapsuleCollider capsule;
 
@@ -31,7 +33,8 @@ protected:
 	float GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal);
 	glm::vec3 GetCollisionNorm(glm::vec3 collisionPos, glm::vec3 sphereC);
 	glm::vec3 GetCollisionPoint(glm::vec3, glm::vec3, glm::vec3, float);
-
+	void ReboundPlane(glm::vec3&, glm::vec3&, glm::vec3, float);
+	bool CheckCollisionSphere(glm::vec3, glm::vec3, float);
 	struct BoxCollider
 	{
 		glm::vec3 pos[2] = { glm::vec3(-5.f, 0.f, -5.f), glm::vec3{5.f, 10.f, 5.f} };

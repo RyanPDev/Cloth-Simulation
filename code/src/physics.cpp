@@ -15,7 +15,6 @@ extern void Exemple_PhysicsUpdate(float dt);
 extern void Exemple_PhysicsCleanup();
 
 namespace LilSpheres {
-	//extern const int maxParticles;
 	extern int particleCount;
 	extern void updateParticles(int startIdx, int count, float* array_data);
 }
@@ -39,25 +38,32 @@ extern bool renderCloth;
 
 bool show_test_window = false;
 
-Solver solver;
-Euler euler;
-Verlet verlet;
+Solver* solver;
 Mesh mesh;
 std::string t;
 float timer = 0;
 float resetTimer = 5;
 bool autoReset = false;
-bool usingVerlet = true;
+bool usingVerlet = false;
 bool playSimulation = false;
 bool enableParticles = false;
+glm::vec3 sphereC;
+float r;
+float rebound;
+float friction;
 
 void ResetSimulation()
 {
 	timer = 0;
+	sphereC = solver->sphere.c;
+	r = solver->sphere.r;
+	rebound = solver->reboundCoefficient;
+	friction = solver->frictionCoefficient;
+
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), mesh.LStretch);
-	solver = Solver(solver.sphere.c, solver.sphere.r, solver.useCollision);
-	euler = Euler();
-	verlet = Verlet();
+	delete solver;
+	solver = new Verlet(sphereC, r, rebound, friction);
+	//solver = Solver(solver.sphere.c, solver.sphere.r);
 }
 
 void GUI() {
@@ -69,32 +75,30 @@ void GUI() {
 		ImGui::Checkbox("Play simulation", &playSimulation);
 		ImGui::Checkbox("Enable particles", &renderParticles);
 
-
-		ImGui::RadioButton("Euler", (int*)&usingVerlet, 0); ImGui::SameLine();
-		ImGui::RadioButton("Verlet", (int*)&usingVerlet, 1);
-
+		/*ImGui::RadioButton("Euler", (int*)&usingVerlet, 0); ImGui::SameLine();
+		ImGui::RadioButton("Verlet", (int*)&usingVerlet, 1);*/
 
 		ImGui::DragFloat("Stretch rest length", (float*)&mesh.LStretch, 0.005f, 0.1, 1.f);
 
 		if (ImGui::CollapsingHeader("Solver parameters"))
 		{
-			ImGui::DragFloat3("Gravity", (float*)&solver.gravity, 0.05f, -9.81f, 9.81f);
+			ImGui::DragFloat3("Gravity", (float*)&solver->gravity, 0.05f, -9.81f, 9.81f);
 		}
 
 		if (ImGui::CollapsingHeader("Collision"))
 		{
-			ImGui::Checkbox("Use Collision", &solver.useCollision);
-			if (solver.useCollision)
+			ImGui::Checkbox("Use Collision", &UseCollision);
+			if (UseCollision)
 			{
-				ImGui::DragFloat("Elasticidad", &solver.reboundCoefficient, 0.005f, 0.01f, 1.f);
-				ImGui::DragFloat("Friccion", &solver.frictionCoefficient, 0.005f, 0.f, 1.f);
+				ImGui::DragFloat("Elasticidad", &solver->reboundCoefficient, 0.005f, 0.01f, 1.f);
+				ImGui::DragFloat("Friccion", &solver->frictionCoefficient, 0.005f, 0.f, 1.f);
 
 				ImGui::Checkbox("Use sphere collider", &renderSphere);
 
 				if (renderSphere)
 				{
-					ImGui::DragFloat3("Shpere Pos", (float*)&solver.sphere.c, 0.05f, -9.8f, 9.8f);
-					ImGui::DragFloat("Sphere Radius", &solver.sphere.r, 0.005f, 0.3f, 5.f);
+					ImGui::DragFloat3("Shpere Pos", (float*)&solver->sphere.c, 0.05f, -9.8f, 9.8f);
+					ImGui::DragFloat("Sphere Radius", &solver->sphere.r, 0.005f, 0.3f, 5.f);
 				}
 			}
 		}
@@ -132,17 +136,9 @@ void PhysicsInit()
 	renderParticles = false;
 	renderCloth = true;
 	renderSphere = false;
-	solver = Solver();
-	euler = Euler();
-	verlet = Verlet();
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), 0.5);
-	Sphere::updateSphere(solver.sphere.c, solver.sphere.r);
+	solver = new Verlet();
 	LilSpheres::particleCount = mesh.width * mesh.height;
-
-	//renderCapsule = true;
-	//ps = ParticleSystem(10000);
-	//emitter = Emitter(Emitter::Type::FOUNTAIN);
-	//Capsule::updateCapsule(euler.capsule.pos[0], euler.capsule.pos[1], euler.capsule.r);
 }
 
 void PhysicsUpdate(float dt)
@@ -152,33 +148,19 @@ void PhysicsUpdate(float dt)
 		timer += dt;
 		for (int i = 0; i < 10; i++)
 		{
-			if (usingVerlet) verlet.Update(mesh, dt / 10);
-			else euler.Update(mesh, dt / 10);
+			mesh.GetSpringForces(solver->gravity);
+			solver->Update(mesh, dt / 10);
+			/*if (usingVerlet)
+			else euler.Update(mesh, dt / 10);*/
 		}
 
 		if (autoReset && timer >= resetTimer) ResetSimulation();
 	}
 	ClothMesh::updateClothMesh(&mesh.positions[0].x);
-	Sphere::updateSphere(solver.sphere.c, solver.sphere.r);
+	Sphere::updateSphere(solver->sphere.c, solver->sphere.r);
 	LilSpheres::updateParticles(0, mesh.width * mesh.height, &mesh.positions[0].x);
-
-	//Capsule::updateCapsule(euler.capsule.pos[0], euler.capsule.pos[1], euler.capsule.r);
-	//ps.DestroyOldParticles(maxAge);
-	/*if (ps.maxParticles > maxAge / dt)
-		if (timer >= 1 / emissionRate)
-		{
-			while (timer > 0)
-			{
-				timer -= 1 / emissionRate;
-				emitter.spawn(ps);
-			}
-
-			timer = 0;
-		}*/
-		//euler.Update(ps, dt);
-					//ps.UpdateLilSpheres();
-					//ps.UpdateAge(dt);
 }
 
 void PhysicsCleanup() {
+	delete solver;
 }

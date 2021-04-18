@@ -124,7 +124,6 @@ void GLrender() {
 	ImGui::Render();
 }
 
-
 //////////////////////////////////////////////////
 GLuint compileShader(const char* shaderStr, GLenum shaderType, const char* name = "") {
 	GLuint shader = glCreateShader(shaderType);

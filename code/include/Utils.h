@@ -6,3 +6,5 @@ static float Pitagoras(float x, float y)
 {
 	return glm::sqrt(glm::pow(x, 2) + glm::pow(y, 2));
 }
+
+static bool UseCollision = true;

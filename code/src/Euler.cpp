@@ -7,7 +7,7 @@ void Euler::Update(Mesh& mesh, float dt)
 	glm::vec3 iPos, iV, auxPos, auxV;
 	int counter = 0;
 	// per cada partícula
-	for (int i = 0; i < mesh.currentParticles; i++)
+	for (int i = 0; i < mesh.maxParticles; i++)
 	{
 		iPos = mesh.positions[i];
 		iV = mesh.celerities[i];
@@ -16,15 +16,13 @@ void Euler::Update(Mesh& mesh, float dt)
 		mesh.celerities[i] = mesh.celerities[i] + (gravity * dt);
 
 		// Collision Sphere
-		if (CheckCollisionSphere(mesh.positions[i], sphere.c, sphere.r))
-		{
-			glm::vec3 colPos = GetCollisionPoint(iPos, mesh.positions[i], sphere.c, sphere.r);
-			glm::vec3 norm = GetCollisionNorm(colPos, sphere.c);
-			ReboundPlane(mesh.positions[i], mesh.celerities[i], norm, GetDFromPlane(colPos, norm));
-		}
-
-		// Collision Capsule
-		//CollisionCilinder(iPos, mesh.positions[i], mesh.celerities[i]);
+		if (UseCollision)
+			if (CheckCollisionSphere(mesh.positions[i], sphere.c, sphere.r))
+			{
+				glm::vec3 colPos = GetCollisionPoint(iPos, mesh.positions[i], sphere.c, sphere.r);
+				glm::vec3 norm = GetCollisionNorm(colPos, sphere.c);
+				ReboundPlane(mesh.positions[i], mesh.celerities[i], norm, GetDFromPlane(colPos, norm));
+			}
 
 		while (CheckCollisionBox(iPos, mesh.positions[i]) < 6)
 		{
@@ -46,19 +44,4 @@ int Euler::CheckCollisionBox(glm::vec3 iPos, glm::vec3 pos)
 		}
 	}
 	return collidedPlane;
-}
-
-bool Euler::CheckCollisionSphere(glm::vec3 pos, glm::vec3 sphereCenter, float radius)
-{
-	return (glm::abs(glm::distance(sphereCenter, pos)) - radius <= 0);
-}
-
-void Euler::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
-{
-	p = p - ((1 + reboundCoefficient) * (glm::dot(n, p) + d) * n);
-	v = v - (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
-
-	glm::vec3 vN = glm::dot(n, v) * n;
-	glm::vec3 vT = v - vN;
-	v = v - frictionCoefficient * vT;
 }

@@ -42,12 +42,6 @@
     <ClCompile Include="include\imgui\imgui_impl_sdl_gl3.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Exemple.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Emitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Euler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -65,9 +59,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Emitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Euler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
