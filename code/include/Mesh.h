@@ -11,13 +11,14 @@ private:
 
 public:
 	Mesh();
-	Mesh(int, int, glm::vec3, float);
+	Mesh(int, int, glm::vec3, float, bool);
 
 	int width, height;
 	float LStretch, LShear, LBending;
 	glm::vec3 initPos;
 
 	float kEStretch, kEShear, kEBend, stretchDamping, shearDamping, bendDamping;
+	bool useCollision;
 
 	void GetSpringForces(glm::vec3);
 };

@@ -4,10 +4,8 @@
 
 class Euler : public Solver
 {
-private:
-	int CheckCollisionBox(glm::vec3, glm::vec3);
-
 public:
 	Euler();
+	Euler(glm::vec3, float, float, float, bool);
 	void Update(Mesh& mesh, float dt);
 };

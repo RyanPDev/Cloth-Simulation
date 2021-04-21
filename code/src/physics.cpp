@@ -8,12 +8,6 @@
 #include <string>
 #include <sstream>
 
-//Exemple
-extern void Exemple_GUI();
-extern void Exemple_PhysicsInit();
-extern void Exemple_PhysicsUpdate(float dt);
-extern void Exemple_PhysicsCleanup();
-
 namespace LilSpheres {
 	extern int particleCount;
 	extern void updateParticles(int startIdx, int count, float* array_data);
@@ -44,8 +38,9 @@ std::string t;
 float timer = 0;
 float resetTimer = 5;
 bool autoReset = false;
-bool usingVerlet = false;
+bool usingVerlet = true;
 bool playSimulation = false;
+bool useSphereCollision = false;
 bool enableParticles = false;
 glm::vec3 sphereC;
 float r;
@@ -59,11 +54,11 @@ void ResetSimulation()
 	r = solver->sphere.r;
 	rebound = solver->reboundCoefficient;
 	friction = solver->frictionCoefficient;
-
-	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), mesh.LStretch);
+	useSphereCollision = solver->useSphereCollision;
+	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), mesh.LStretch, mesh.useCollision);
 	delete solver;
-	solver = new Verlet(sphereC, r, rebound, friction);
-	//solver = Solver(solver.sphere.c, solver.sphere.r);
+	if (usingVerlet) solver = new Verlet(sphereC, r, rebound, friction, useSphereCollision);
+	else solver = new Euler(sphereC, r, rebound, friction, useSphereCollision);
 }
 
 void GUI() {
@@ -75,8 +70,9 @@ void GUI() {
 		ImGui::Checkbox("Play simulation", &playSimulation);
 		ImGui::Checkbox("Enable particles", &renderParticles);
 
-		/*ImGui::RadioButton("Euler", (int*)&usingVerlet, 0); ImGui::SameLine();
-		ImGui::RadioButton("Verlet", (int*)&usingVerlet, 1);*/
+		if (ImGui::RadioButton("Euler", (int*)&usingVerlet, 0)) ResetSimulation(); 		
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Verlet", (int*)&usingVerlet, 1)) ResetSimulation();
 
 		ImGui::DragFloat("Stretch rest length", (float*)&mesh.LStretch, 0.005f, 0.1, 1.f);
 
@@ -87,19 +83,22 @@ void GUI() {
 
 		if (ImGui::CollapsingHeader("Collision"))
 		{
-			ImGui::Checkbox("Use Collision", &UseCollision);
-			if (UseCollision)
+			ImGui::Checkbox("Use Collision", &mesh.useCollision);
+			if (mesh.useCollision)
 			{
-				ImGui::DragFloat("Elasticidad", &solver->reboundCoefficient, 0.005f, 0.01f, 1.f);
+				ImGui::DragFloat("Elasticidad", &solver->reboundCoefficient, 0.005f, 0.f, 1.f);
 				ImGui::DragFloat("Friccion", &solver->frictionCoefficient, 0.005f, 0.f, 1.f);
 
 				ImGui::Checkbox("Use sphere collider", &renderSphere);
 
 				if (renderSphere)
 				{
+					solver->useSphereCollision = true;
 					ImGui::DragFloat3("Shpere Pos", (float*)&solver->sphere.c, 0.05f, -9.8f, 9.8f);
 					ImGui::DragFloat("Sphere Radius", &solver->sphere.r, 0.005f, 0.3f, 5.f);
 				}
+				else
+					solver->useSphereCollision = false;
 			}
 		}
 
@@ -136,8 +135,9 @@ void PhysicsInit()
 	renderParticles = false;
 	renderCloth = true;
 	renderSphere = false;
-	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), 0.5);
+	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), 0.5, true);
 	solver = new Verlet();
+	solver->useSphereCollision = renderSphere;
 	LilSpheres::particleCount = mesh.width * mesh.height;
 }
 
@@ -150,8 +150,6 @@ void PhysicsUpdate(float dt)
 		{
 			mesh.GetSpringForces(solver->gravity);
 			solver->Update(mesh, dt / 10);
-			/*if (usingVerlet)
-			else euler.Update(mesh, dt / 10);*/
 		}
 
 		if (autoReset && timer >= resetTimer) ResetSimulation();

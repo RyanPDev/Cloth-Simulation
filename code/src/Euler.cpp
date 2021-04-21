@@ -1,47 +1,44 @@
 #include "Euler.h"
 
 Euler::Euler() : Solver() {}
+Euler::Euler(glm::vec3 sphereC, float r, float rebound, float friction, bool useSphereCollision) : Solver(sphereC, r, rebound, friction, useSphereCollision) {}
 
 void Euler::Update(Mesh& mesh, float dt)
 {
-	glm::vec3 iPos, iV, auxPos, auxV;
-	int counter = 0;
 	// per cada partícula
 	for (int i = 0; i < mesh.maxParticles; i++)
 	{
 		iPos = mesh.positions[i];
 		iV = mesh.celerities[i];
 
-		mesh.positions[i] = mesh.positions[i] + mesh.celerities[i] * dt;
-		mesh.celerities[i] = mesh.celerities[i] + (gravity * dt);
+		mesh.positions[i] = iPos + iV * dt;
 
-		// Collision Sphere
-		if (UseCollision)
-			if (CheckCollisionSphere(mesh.positions[i], sphere.c, sphere.r))
+		if (glm::distance(iPos, mesh.positions[i]) > (mesh.LStretch * 0.1))
+			mesh.positions[i] = iPos + glm::normalize(mesh.positions[i] - iPos) * (mesh.LStretch * 0.1f);
+
+		mesh.celerities[i] = iV + mesh.forces[i] * dt;
+		
+		if (mesh.useCollision)
+		{
+			//Collision Sphere
+			if (CheckCollisionSphere(mesh.positions[i], sphere.c, sphere.r) && useSphereCollision)
 			{
 				glm::vec3 colPos = GetCollisionPoint(iPos, mesh.positions[i], sphere.c, sphere.r);
 				glm::vec3 norm = GetCollisionNorm(colPos, sphere.c);
-				ReboundPlane(mesh.positions[i], mesh.celerities[i], norm, GetDFromPlane(colPos, norm));
+				float d = GetDFromPlane(colPos, norm);
+				//iPos = mirror_point(norm.x, norm.y, norm.z, d, iPos.x, iPos.y, iPos.z);
+				ReboundPlane(mesh.positions[i], mesh.celerities[i], norm, d);
 			}
 
-		while (CheckCollisionBox(iPos, mesh.positions[i]) < 6)
-		{
-			int collidedPlane = CheckCollisionBox(iPos, mesh.positions[i]);
-			ReboundPlane(mesh.positions[i], mesh.celerities[i], box.norms[collidedPlane], box.d[collidedPlane]);
+			//Collision Walls
+			for (int p = 0; p < 6; p++)
+			{
+				if ((glm::dot(box.norms[p], iPos) + box.d[p]) * (glm::dot(box.norms[p], mesh.positions[i]) + box.d[p]) <= 0)
+				{
+					//mirror_point(box.norms[p].x, box.norms[p].y, box.norms[p].z, box.d[p], iPos.x, iPos.y, iPos.z);
+					ReboundPlane(mesh.positions[i], mesh.celerities[i], box.norms[p], box.d[p]);
+				}
+			}
 		}
 	}
-}
-
-int Euler::CheckCollisionBox(glm::vec3 iPos, glm::vec3 pos)
-{
-	int collidedPlane = 6;
-	for (int i = 0; i < 6; i++)
-	{
-		if ((glm::dot(box.norms[i], iPos) + box.d[i]) * (glm::dot(box.norms[i], pos) + box.d[i]) <= 0 && GetDistanceFromPlane(i, iPos) != 0)
-		{
-			collidedPlane = i;
-			break;
-		}
-	}
-	return collidedPlane;
 }

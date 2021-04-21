@@ -1,12 +1,12 @@
 #include "Mesh.h"
 
-Mesh::Mesh() : width(10), height(10), kEStretch(1), kEShear(1), kEBend(1), stretchDamping(1), shearDamping(1), bendDamping(1), LStretch(0.5) {
+Mesh::Mesh() : width(10), height(10), kEStretch(1), kEShear(1), kEBend(1), stretchDamping(1), shearDamping(1), bendDamping(1), LStretch(0.5), useCollision(0) {
 	LShear = Pitagoras(LStretch, LStretch);
 	LBending = LStretch * 2;
 }
 
-Mesh::Mesh(int _width, int _height, glm::vec3 _initPos, float _stretch) : kEStretch(1000), kEShear(1000), kEBend(1000), stretchDamping(50), shearDamping(50),
-bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(_stretch), ParticleSystem(_width* _height)
+Mesh::Mesh(int _width, int _height, glm::vec3 _initPos, float _stretch, bool _useCollision) : kEStretch(1000), kEShear(1000), kEBend(1000), stretchDamping(50), shearDamping(50),
+bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(_stretch), useCollision(_useCollision), ParticleSystem(_width* _height)
 {
 	LShear = Pitagoras(LStretch, LStretch);
 	LBending = LStretch * 2;

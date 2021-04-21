@@ -18,17 +18,20 @@ private:
 
 public:
 	Solver();
-	Solver(glm::vec3, float, float, float);
+	Solver(glm::vec3, float, float, float, bool);
 
 	virtual void Update(Mesh&, float) = 0;
 
 	glm::vec3 gravity;
 	float reboundCoefficient;
 	float frictionCoefficient;
+	bool useSphereCollision;
 	SphereCollider sphere;
 	CapsuleCollider capsule;
 
 protected:
+	glm::vec3 iPos;
+	glm::vec3 iV;
 	float GetDistanceFromPlane(int, glm::vec3);
 	float GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal);
 	glm::vec3 GetCollisionNorm(glm::vec3 collisionPos, glm::vec3 sphereC);

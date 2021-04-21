@@ -4,11 +4,9 @@
 
 class Verlet : public Solver
 {
-private:
-
 public:
 	Verlet();
-	Verlet(glm::vec3, float, float, float);
+	Verlet(glm::vec3, float, float, float, bool);
 
 	void Update(Mesh&, float);
 };

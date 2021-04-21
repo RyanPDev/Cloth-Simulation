@@ -1,8 +1,9 @@
 #include "Solver.h"
 
-Solver::Solver() : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1) {}
+Solver::Solver() : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1), useSphereCollision(0) {}
 
-Solver::Solver(glm::vec3 spherePos, float sphereRadius, float rebound, float friction) : gravity(0, -9.81, 0), reboundCoefficient(rebound), frictionCoefficient(friction)
+Solver::Solver(glm::vec3 spherePos, float sphereRadius, float rebound, float friction, bool _useSphereCollision) : gravity(0, -9.81, 0), reboundCoefficient(rebound), frictionCoefficient(friction),
+useSphereCollision(_useSphereCollision)
 {
 	sphere.c = spherePos;
 	sphere.r = sphereRadius;
@@ -10,11 +11,8 @@ Solver::Solver(glm::vec3 spherePos, float sphereRadius, float rebound, float fri
 
 float Solver::GetDistanceFromPlane(int plane, glm::vec3 pos)
 {
-	float distance = 0;
-	distance = (glm::abs((box.norms[plane].x * pos.x) + (box.norms[plane].y * pos.y) + (box.norms[plane].z * pos.z) + box.d[plane])) /
+	return (glm::abs((box.norms[plane].x * pos.x) + (box.norms[plane].y * pos.y) + (box.norms[plane].z * pos.z) + box.d[plane])) /
 		(glm::sqrt(glm::pow(box.norms[plane].x, 2) + glm::pow(box.norms[plane].y, 2) + glm::pow(box.norms[plane].z, 2)));
-
-	return distance;
 }
 
 glm::vec3 Solver::GetCollisionNorm(glm::vec3 collisionPos, glm::vec3 sphereC)
@@ -31,13 +29,16 @@ float Solver::GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal)
 
 void Solver::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
 {
-	p = p - ((1 + reboundCoefficient) * (glm::dot(n, p) + d) * n);
-	v = v - (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
+	p -= (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
+	v -= (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
+
+	if (glm::dot(n, p) + d == 0.f) p += n * 0.00001f;
 
 	glm::vec3 vN = glm::dot(n, v) * n;
 	glm::vec3 vT = v - vN;
 	v = v - frictionCoefficient * vT;
 }
+
 bool Solver::CheckCollisionSphere(glm::vec3 pos, glm::vec3 sphereCenter, float radius)
 {
 	return (glm::abs(glm::distance(sphereCenter, pos)) - radius <= 0);
