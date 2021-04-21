@@ -121,10 +121,10 @@ int main(int argc, char** argv) {
 		waitforFrameEnd();
 	}
 
+	PhysicsCleanup();
 	ImGui_ImplSdlGL3_Shutdown();
 	SDL_GL_DeleteContext(maincontext);
 	SDL_DestroyWindow(mainwindow);
 	SDL_Quit();
-	PhysicsCleanup();
 	return 0;
 }

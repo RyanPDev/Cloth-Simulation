@@ -27,23 +27,6 @@ float Solver::GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal)
 		(collisionPos.z * normal.z);
 }
 
-void Solver::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
-{
-	p -= (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
-	v -= (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
-
-	if (glm::dot(n, p) + d == 0.f) p += n * 0.00001f;
-
-	glm::vec3 vN = glm::dot(n, v) * n;
-	glm::vec3 vT = v - vN;
-	v = v - frictionCoefficient * vT;
-}
-
-bool Solver::CheckCollisionSphere(glm::vec3 pos, glm::vec3 sphereCenter, float radius)
-{
-	return (glm::abs(glm::distance(sphereCenter, pos)) - radius <= 0);
-}
-
 glm::vec3 Solver::GetCollisionPoint(glm::vec3 iPos, glm::vec3 pos, glm::vec3 sphereC, float sphereR)
 {
 	float a = 0, b = 0, c = 0, delta = 0, lambda = 0;
@@ -79,4 +62,21 @@ glm::vec3 Solver::GetCollisionPoint(glm::vec3 iPos, glm::vec3 pos, glm::vec3 sph
 	}
 
 	return collisionPos;
+}
+
+void Solver::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
+{
+	p -= (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
+	v -= (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
+
+	if (glm::dot(n, p) + d == 0.f) p += n * 0.00001f;
+
+	glm::vec3 vN = glm::dot(n, v) * n;
+	glm::vec3 vT = v - vN;
+	v = v - frictionCoefficient * vT;
+}
+
+bool Solver::CheckCollisionSphere(glm::vec3 pos, glm::vec3 sphereCenter, float radius)
+{
+	return (glm::abs(glm::distance(sphereCenter, pos)) - radius <= 0);
 }

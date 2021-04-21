@@ -7,6 +7,7 @@
 #include <ctime>
 #include <string>
 #include <sstream>
+#include <random>
 
 namespace LilSpheres {
 	extern int particleCount;
@@ -32,11 +33,13 @@ extern bool renderCloth;
 
 bool show_test_window = false;
 
+std::random_device rd;
+std::mt19937 gen(rd());
 Solver* solver;
 Mesh mesh;
 std::string t;
 float timer = 0;
-float resetTimer = 5;
+float resetTimer = 20;
 bool autoReset = false;
 bool usingVerlet = true;
 bool playSimulation = false;
@@ -49,9 +52,13 @@ float friction;
 
 void ResetSimulation()
 {
+	std::uniform_real_distribution<double> radius(1, 3);
 	timer = 0;
-	sphereC = solver->sphere.c;
-	r = solver->sphere.r;
+	r = radius(gen);
+	std::uniform_real_distribution<double> centerX(-5+r, 5-r);
+	std::uniform_real_distribution<double> centerY(0+r, 10-r);
+	std::uniform_real_distribution<double> centerZ(-5+r, 5-r);
+	sphereC = glm::vec3(centerX(gen), centerY(gen), centerZ(gen));
 	rebound = solver->reboundCoefficient;
 	friction = solver->frictionCoefficient;
 	useSphereCollision = solver->useSphereCollision;
@@ -122,7 +129,7 @@ void GUI() {
 		t = "Autoreset simulation: " + std::to_string(resetTimer) + "s";
 		ImGui::Checkbox(t.c_str(), &autoReset);
 
-		if (autoReset) ImGui::DragFloat("Autoreset timer", (float*)&resetTimer, 0.05f, 5.f, 10.f);
+		if (autoReset) ImGui::DragFloat("Autoreset timer", (float*)&resetTimer, 0.05f, 5.f, 20.f);
 
 		if (ImGui::Button("Reset simulation")) ResetSimulation();
 	}
@@ -131,10 +138,9 @@ void GUI() {
 
 void PhysicsInit()
 {
-	srand(static_cast<unsigned>(time(nullptr)));
 	renderParticles = false;
 	renderCloth = true;
-	renderSphere = false;
+	renderSphere = true;
 	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), 0.5, true);
 	solver = new Verlet();
 	solver->useSphereCollision = renderSphere;
