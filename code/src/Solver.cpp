@@ -70,7 +70,8 @@ void Solver::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
 	p -= (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
 	v -= (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
 
-	//JA NO PASSA! (en principi) pero això és un offset per si hi hagués algún cas límit on alguna partícula atravessa la coll·lisió
+	//pero això és un offset per si hi hagués algún cas límit on alguna partícula atravessa la coll·lisió
+	//JA NO PASSA!(en principi)
 	if (glm::dot(n, p) + d == 0.f) p += n * 0.001f;
 
 	glm::vec3 vN = glm::dot(n, v) * n;
