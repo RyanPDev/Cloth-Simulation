@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
 		waitforFrameEnd();
 	}
 
-	PhysicsCleanup();
+	PhysicsCleanup(); // Cridem a la funció del cleanup
 	ImGui_ImplSdlGL3_Shutdown();
 	SDL_GL_DeleteContext(maincontext);
 	SDL_DestroyWindow(mainwindow);

@@ -15,7 +15,7 @@ ParticleSystem::ParticleSystem(int _maxParticles) : maxParticles(_maxParticles)
 	forces = new glm::vec3[maxParticles];
 }
 
-void ParticleSystem::UpdateParticle(int idx, glm::vec3 newPos)
+void ParticleSystem::UpdateParticle(int idx, glm::vec3 newPos) 
 {
 	positions[idx] = newPos;
 }

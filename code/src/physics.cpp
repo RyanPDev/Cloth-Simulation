@@ -9,6 +9,10 @@
 #include "Mesh.h"
 #include "Verlet.h"
 
+bool show_test_window = false;
+
+#pragma region namespaces
+
 namespace LilSpheres {
 	extern int particleCount;
 	extern void updateParticles(int startIdx, int count, float* array_data);
@@ -31,8 +35,9 @@ extern bool renderSphere;
 extern bool renderCapsule;
 extern bool renderCloth;
 
-bool show_test_window = false;
+#pragma endregion
 
+#pragma region Variables globals
 std::random_device rd;
 std::mt19937 gen(rd());
 Solver* solver;
@@ -49,7 +54,9 @@ glm::vec3 sphereC;
 float r;
 float rebound;
 float friction;
+#pragma endregion
 
+//Funció que reinicialitza i per tant reseteja tots els elements desitjats de la simulació
 void ResetSimulation()
 {
 	timer = 0;
@@ -68,11 +75,12 @@ void ResetSimulation()
 	else solver = new Euler(sphereC, r, rebound, friction, useSphereCollision);
 }
 
+//Paràmetres modificables des de l'interfaç
 void GUI() {
 	bool show = true;
 	ImGui::Begin("Physics Parameters", &show, 0);
 	{
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);//FrameRate
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 		ImGui::Checkbox("Play simulation", &playSimulation);
 		ImGui::Checkbox("Enable particles", &renderParticles);
@@ -136,6 +144,7 @@ void GUI() {
 	ImGui::End();
 }
 
+//Inicialitza la simulació
 void PhysicsInit()
 {
 	renderParticles = false;
@@ -147,6 +156,7 @@ void PhysicsInit()
 	LilSpheres::particleCount = mesh.width * mesh.height;
 }
 
+//Update de les posicions amb el solver que s'estigui usant, de la mesh i de les partícules/esfera/malla
 void PhysicsUpdate(float dt)
 {
 	if (playSimulation)
@@ -165,6 +175,6 @@ void PhysicsUpdate(float dt)
 	LilSpheres::updateParticles(0, mesh.width * mesh.height, &mesh.positions[0].x);
 }
 
-void PhysicsCleanup() {
-	delete solver;
+void PhysicsCleanup() { 
+	delete solver; //-->Cleanup del solver
 }

@@ -13,7 +13,7 @@ bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(_st
 
 	initPos.x = -_stretch * width / 2 + _stretch / 2;
 
-	for (int row = 0; row < height; row++)
+	for (int row = 0; row < height; row++) // Inicialitzem la Mesh
 	{
 		for (int col = 0; col < width; col++)
 		{
@@ -24,11 +24,11 @@ bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(_st
 	}
 }
 
-int Mesh::GetIndex(int _row, int _col) { return _row * width + _col; }
+int Mesh::GetIndex(int _row, int _col) { return _row * width + _col; } // Funció que retorna l'index d'una particula rebent la seva fila i columna
 
-void Mesh::GetSpringForces(glm::vec3 externalForces)
+void Mesh::GetSpringForces(glm::vec3 externalForces) // Funció que calcula el sumatori de totes les forces de les motlles de cada particula
 {
-	LShear = Pitagoras(LStretch, LStretch);
+	LShear = Pitagoras(LStretch, LStretch); // Refem el calcul en cada frame per poder cambiar el valor desde l'imgui
 	LBending = LStretch * 2;
 
 	for (int row = 0; row < height; row++)
@@ -37,9 +37,9 @@ void Mesh::GetSpringForces(glm::vec3 externalForces)
 		{
 			int particleIdx = GetIndex(row, col);
 
-			if (particleIdx == 0 || particleIdx == width - 1)
+			if (particleIdx == 0 || particleIdx == width - 1)	//La primera i ultima particula de la primera fila no es mouen
 				forces[particleIdx] = glm::vec3(0, 0, 0);
-			else
+			else //Calculem totes les forces
 			{
 				// Stretch
 				forces[particleIdx] = CalculateForce(col + 1, row, col, row, kEStretch, stretchDamping, LStretch);
@@ -65,13 +65,13 @@ void Mesh::GetSpringForces(glm::vec3 externalForces)
 	}
 }
 
-glm::vec3 Mesh::CalculateForce(int xPos, int yPos, int initX, int initY, float kElasticity, float kDamping, float restLength)
+glm::vec3 Mesh::CalculateForce(int xPos, int yPos, int initX, int initY, float kElasticity, float kDamping, float restLength) // Calcula la força d'una motlla
 {
 	glm::vec3 force = glm::vec3(0, 0, 0);
 
 	glm::vec3 n = glm::normalize(positions[GetIndex(initY, initX)] - positions[GetIndex(yPos, xPos)]);
 
-	if (isInMesh(xPos, yPos))
+	if (isInMesh(xPos, yPos)) // Comprobem si la motlla a la que volem accedir forma part de la mesh
 	{
 		force = static_cast<glm::vec3>((-(kElasticity * (glm::distance(positions[GetIndex(initY, initX)], positions[GetIndex(yPos, xPos)]) - restLength)
 			+ glm::dot(kDamping * (celerities[GetIndex(initY, initX)] - celerities[GetIndex(yPos, xPos)]), n)))) * n;
@@ -80,7 +80,7 @@ glm::vec3 Mesh::CalculateForce(int xPos, int yPos, int initX, int initY, float k
 	return force;
 }
 
-bool Mesh::isInMesh(int xIdx, int yIdx)
+bool Mesh::isInMesh(int xIdx, int yIdx) // Calcula si la posisió a accedir forma part de la mesh
 {
 	return xIdx >= 0 && yIdx >= 0 && yIdx < height&& xIdx < width;
 }

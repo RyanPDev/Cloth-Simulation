@@ -3,8 +3,8 @@
 Euler::Euler() : Solver() {}
 Euler::Euler(glm::vec3 sphereC, float r, float rebound, float friction, bool useSphereCollision) : Solver(sphereC, r, rebound, friction, useSphereCollision) {}
 
-void Euler::Update(Mesh& mesh, float dt)
-{
+void Euler::Update(Mesh& mesh, float dt) // --> Update del Euler Solver
+{	
 	for (int i = 0; i < mesh.maxParticles; i++)
 	{
 		iPos = mesh.positions[i];
@@ -12,12 +12,12 @@ void Euler::Update(Mesh& mesh, float dt)
 
 		mesh.positions[i] = iPos + iV * dt;
 
-		if (glm::distance(iPos, mesh.positions[i]) > (mesh.LStretch * 0.1))
+		if (glm::distance(iPos, mesh.positions[i]) > (mesh.LStretch * 0.1)) // --> Amb aquest if ens asegurem de que el moviment de particula mai sigui major al 10% de la distancia de repos
 			mesh.positions[i] = iPos + glm::normalize(mesh.positions[i] - iPos) * (mesh.LStretch * 0.1f);
 		
 		mesh.celerities[i] = iV + mesh.forces[i] * dt;
 
-		if (mesh.useCollision)
+		if (mesh.useCollision) //--> Booleana per controlar si es calculen col·lisions en la simulació o no
 		{
 			//Collision Sphere
 			if (CheckCollisionSphere(mesh.positions[i], sphere.c, sphere.r) && useSphereCollision)

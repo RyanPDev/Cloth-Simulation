@@ -1,7 +1,6 @@
 #include "Solver.h"
 
 Solver::Solver() : gravity(0, -9.81, 0), reboundCoefficient(1), frictionCoefficient(1), useSphereCollision(0) {}
-
 Solver::Solver(glm::vec3 spherePos, float sphereRadius, float rebound, float friction, bool _useSphereCollision) : gravity(0, -9.81, 0), reboundCoefficient(rebound), frictionCoefficient(friction),
 useSphereCollision(_useSphereCollision)
 {
@@ -9,17 +8,20 @@ useSphereCollision(_useSphereCollision)
 	sphere.r = sphereRadius;
 }
 
+//Calcula i retorna la distància entre un punt i un plà del cub
 float Solver::GetDistanceFromPlane(int plane, glm::vec3 pos)
 {
 	return (glm::abs((box.norms[plane].x * pos.x) + (box.norms[plane].y * pos.y) + (box.norms[plane].z * pos.z) + box.d[plane])) /
 		(glm::sqrt(glm::pow(box.norms[plane].x, 2) + glm::pow(box.norms[plane].y, 2) + glm::pow(box.norms[plane].z, 2)));
 }
 
+//Calcula i retorna la normal del plà a partir del punt de contacte i el centre de l'esfera
 glm::vec3 Solver::GetCollisionNorm(glm::vec3 collisionPos, glm::vec3 sphereC)
 {
 	return glm::normalize(collisionPos - sphereC);
 }
 
+//Calcula i retorna la "d" del plà a partir de la posició de contacte i la normal
 float Solver::GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal)
 {
 	return -(collisionPos.x * normal.x) -
@@ -27,6 +29,7 @@ float Solver::GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal)
 		(collisionPos.z * normal.z);
 }
 
+//Calcula i retorna el punt de contacte de la col·lisió amb l'esfera a partir de la posició inicial, l'actual, el centre de l'esfera i el radi
 glm::vec3 Solver::GetCollisionPoint(glm::vec3 iPos, glm::vec3 pos, glm::vec3 sphereC, float sphereR)
 {
 	float a = 0, b = 0, c = 0, delta = 0, lambda = 0;
@@ -65,13 +68,14 @@ glm::vec3 Solver::GetCollisionPoint(glm::vec3 iPos, glm::vec3 pos, glm::vec3 sph
 	return collisionPos;
 }
 
+//Calcul del rebot en el plà amb Euler
 void Solver::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
 {
 	p -= (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
 	v -= (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
 
-	//pero això és un offset per si hi hagués algún cas límit on alguna partícula atravessa la coll·lisió
-	//JA NO PASSA!(en principi)
+	//Això és un offset per si hi hagués algún cas límit on alguna partícula atravessa la col·lisió de les parets i es quedessin enganxades
+	//JA NO PASSA encara que es comenti aquesta línia (en principi)
 	if (glm::dot(n, p) + d == 0.f) p += n * 0.001f;
 
 	glm::vec3 vN = glm::dot(n, v) * n;
@@ -80,7 +84,8 @@ void Solver::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
 	v = v - frictionCoefficient * vT;
 }
 
-bool Solver::CheckCollisionSphere(glm::vec3 pos, glm::vec3 sphereCenter, float radius)
+//Calcula la col·lisió amb una esfera i retorna si s'ha colisionat o no
+bool Solver::CheckCollisionSphere(glm::vec3 pos, glm::vec3 sphereCenter, float radius) 
 {
 	return (glm::abs(glm::distance(sphereCenter, pos)) - radius <= 0);
 }
