@@ -38,6 +38,7 @@ glm::vec3 Solver::GetCollisionPoint(glm::vec3 iPos, glm::vec3 pos, glm::vec3 sph
 	c = glm::pow((iPos.x - sphereC.x), 2) + glm::pow((iPos.y - sphereC.y), 2) + glm::pow((iPos.z - sphereC.z), 2) - glm::pow(sphereR, 2);
 
 	delta = glm::pow(b, 2) - (4 * a * c);
+
 	if (delta == 0)
 	{
 		lambda = -b / (2 * a);
@@ -52,7 +53,7 @@ glm::vec3 Solver::GetCollisionPoint(glm::vec3 iPos, glm::vec3 pos, glm::vec3 sph
 		collisionPos.y = iPos.y + lambda * vD.y;
 		collisionPos.z = iPos.z + lambda * vD.z;
 
-		if (glm::dot(collisionPos, iPos) < 0) // el angulo es agudo
+		if (glm::dot(collisionPos, iPos) < 0)
 		{
 			lambda = (-b + glm::sqrt(delta)) / (2 * a);
 			collisionPos.x = iPos.x + lambda * vD.x;
@@ -69,6 +70,7 @@ void Solver::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
 	p -= (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
 	v -= (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
 
+	//JA NO PASSA! (en principi) pero això és un offset per si hi hagués algún cas límit on alguna partícula atravessa la coll·lisió
 	if (glm::dot(n, p) + d == 0.f) p += n * 0.001f;
 
 	glm::vec3 vN = glm::dot(n, v) * n;

@@ -1,13 +1,13 @@
 #include <imgui\imgui.h>
 #include <imgui\imgui_impl_sdl_gl3.h>
-#include "ParticleSystem.h"
-#include "Euler.h"
-#include "Mesh.h"
-#include "Verlet.h"
 #include <ctime>
 #include <string>
 #include <sstream>
 #include <random>
+
+#include "Euler.h"
+#include "Mesh.h"
+#include "Verlet.h"
 
 namespace LilSpheres {
 	extern int particleCount;
@@ -52,12 +52,12 @@ float friction;
 
 void ResetSimulation()
 {
-	std::uniform_real_distribution<double> radius(1, 3);
 	timer = 0;
+	std::uniform_real_distribution<double> radius(1, 3);
 	r = radius(gen);
-	std::uniform_real_distribution<double> centerX(-5+r, 5-r);
-	std::uniform_real_distribution<double> centerY(0+r, 10-r);
-	std::uniform_real_distribution<double> centerZ(-5+r, 5-r);
+	std::uniform_real_distribution<double> centerX(-5 + r, 5 - r);
+	std::uniform_real_distribution<double> centerY(r, 9.5 - r);
+	std::uniform_real_distribution<double> centerZ(-5 + r, 5 - r);
 	sphereC = glm::vec3(centerX(gen), centerY(gen), centerZ(gen));
 	rebound = solver->reboundCoefficient;
 	friction = solver->frictionCoefficient;
@@ -77,7 +77,7 @@ void GUI() {
 		ImGui::Checkbox("Play simulation", &playSimulation);
 		ImGui::Checkbox("Enable particles", &renderParticles);
 
-		if (ImGui::RadioButton("Euler", (int*)&usingVerlet, 0)) ResetSimulation(); 		
+		if (ImGui::RadioButton("Euler", (int*)&usingVerlet, 0)) ResetSimulation();
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Verlet", (int*)&usingVerlet, 1)) ResetSimulation();
 

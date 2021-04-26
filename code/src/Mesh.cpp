@@ -13,7 +13,6 @@ bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(_st
 
 	initPos.x = -_stretch * width / 2 + _stretch / 2;
 
-	//Initialize mesh
 	for (int row = 0; row < height; row++)
 	{
 		for (int col = 0; col < width; col++)
@@ -37,6 +36,7 @@ void Mesh::GetSpringForces(glm::vec3 externalForces)
 		for (int col = 0; col < width; col++)
 		{
 			int particleIdx = GetIndex(row, col);
+
 			if (particleIdx == 0 || particleIdx == width - 1)
 				forces[particleIdx] = glm::vec3(0, 0, 0);
 			else

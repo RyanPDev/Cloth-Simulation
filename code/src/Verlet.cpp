@@ -1,6 +1,6 @@
 #include "Verlet.h"
 
-Verlet::Verlet() {}
+Verlet::Verlet() : Solver() {}
 Verlet::Verlet(glm::vec3 sphereC, float r, float rebound, float friction, bool useSphereCollision) : Solver(sphereC, r, rebound, friction, useSphereCollision) {}
 
 void Verlet::Update(Mesh& mesh, float dt)
@@ -28,9 +28,7 @@ void Verlet::Update(Mesh& mesh, float dt)
 			for (int p = 0; p < 6; p++)
 			{
 				if ((glm::dot(box.norms[p], iPos) + box.d[p]) * (glm::dot(box.norms[p], mesh.positions[i]) + box.d[p]) <= 0)
-				{
 					ReboundPlane(mesh.positions[i], iPos, mesh.celerities[i], box.norms[p], box.d[p], dt);
-				}
 			}
 		}
 	
@@ -50,6 +48,5 @@ void Verlet::ReboundPlane(glm::vec3& p, glm::vec3& p2, glm::vec3& v, glm::vec3 n
 	glm::vec3 vT = v - vN;
 
 	v = v - frictionCoefficient * vT;
-
 	p2 = -v * dt + p;
 }

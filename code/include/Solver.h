@@ -32,11 +32,11 @@ public:
 protected:
 	glm::vec3 iPos;
 	glm::vec3 iV;
-	float GetDistanceFromPlane(int, glm::vec3);
-	float GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal);
 	glm::vec3 GetCollisionNorm(glm::vec3 collisionPos, glm::vec3 sphereC);
 	glm::vec3 GetCollisionPoint(glm::vec3, glm::vec3, glm::vec3, float);
 	void ReboundPlane(glm::vec3&, glm::vec3&, glm::vec3, float);
+	float GetDistanceFromPlane(int, glm::vec3);
+	float GetDFromPlane(glm::vec3 collisionPos, glm::vec3 normal);
 	bool CheckCollisionSphere(glm::vec3, glm::vec3, float);
 	struct BoxCollider
 	{
