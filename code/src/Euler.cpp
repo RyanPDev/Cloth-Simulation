@@ -26,7 +26,6 @@ void Euler::Update(Mesh& mesh, float dt)
 				glm::vec3 colPos = GetCollisionPoint(iPos, mesh.positions[i], sphere.c, sphere.r);
 				glm::vec3 norm = GetCollisionNorm(colPos, sphere.c);
 				float d = GetDFromPlane(colPos, norm);
-				//iPos = mirror_point(norm.x, norm.y, norm.z, d, iPos.x, iPos.y, iPos.z);
 				ReboundPlane(mesh.positions[i], mesh.celerities[i], norm, d);
 			}
 
@@ -35,7 +34,6 @@ void Euler::Update(Mesh& mesh, float dt)
 			{
 				if ((glm::dot(box.norms[p], iPos) + box.d[p]) * (glm::dot(box.norms[p], mesh.positions[i]) + box.d[p]) <= 0)
 				{
-					//mirror_point(box.norms[p].x, box.norms[p].y, box.norms[p].z, box.d[p], iPos.x, iPos.y, iPos.z);
 					ReboundPlane(mesh.positions[i], mesh.celerities[i], box.norms[p], box.d[p]);
 				}
 			}

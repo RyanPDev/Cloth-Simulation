@@ -13,8 +13,6 @@ void Verlet::Update(Mesh& mesh, float dt)
 		if (glm::distance(iPos, mesh.positions[i]) > (mesh.LStretch * 0.1))
 			mesh.positions[i] = iPos + glm::normalize(mesh.positions[i] - iPos) * (mesh.LStretch * 0.1f);
 
-		mesh.celerities[i] = (mesh.positions[i] - iPos) / dt;
-
 		if (mesh.useCollision)
 		{
 			//Collision Sphere
@@ -23,7 +21,6 @@ void Verlet::Update(Mesh& mesh, float dt)
 				glm::vec3 colPos = GetCollisionPoint(iPos, mesh.positions[i], sphere.c, sphere.r);
 				glm::vec3 norm = GetCollisionNorm(colPos, sphere.c);
 				float d = GetDFromPlane(colPos, norm);
-				iPos = mirror_point(norm.x, norm.y, norm.z, d, iPos.x, iPos.y, iPos.z);
 				ReboundPlane(mesh.positions[i], iPos, mesh.celerities[i], norm, d, dt);
 			}
 
@@ -32,12 +29,12 @@ void Verlet::Update(Mesh& mesh, float dt)
 			{
 				if ((glm::dot(box.norms[p], iPos) + box.d[p]) * (glm::dot(box.norms[p], mesh.positions[i]) + box.d[p]) <= 0)
 				{
-					iPos = mirror_point(box.norms[p].x, box.norms[p].y, box.norms[p].z, box.d[p], iPos.x, iPos.y, iPos.z);
 					ReboundPlane(mesh.positions[i], iPos, mesh.celerities[i], box.norms[p], box.d[p], dt);
 				}
 			}
 		}
-
+	
+		mesh.celerities[i] = (mesh.positions[i] - iPos) / dt;
 		mesh.positionsBefore[i] = iPos;
 	}
 }
@@ -54,5 +51,5 @@ void Verlet::ReboundPlane(glm::vec3& p, glm::vec3& p2, glm::vec3& v, glm::vec3 n
 
 	v = v - frictionCoefficient * vT;
 
-	p2 = v * dt + p;
+	p2 = -v * dt + p;
 }
