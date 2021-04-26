@@ -69,10 +69,11 @@ void Solver::ReboundPlane(glm::vec3& p, glm::vec3& v, glm::vec3 n, float d)
 	p -= (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
 	v -= (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
 
-	if (glm::dot(n, p) + d == 0.f) p += n * 0.00001f;
+	if (glm::dot(n, p) + d == 0.f) p += n * 0.001f;
 
 	glm::vec3 vN = glm::dot(n, v) * n;
 	glm::vec3 vT = v - vN;
+
 	v = v - frictionCoefficient * vT;
 }
 

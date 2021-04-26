@@ -24,7 +24,7 @@ void Verlet::Update(Mesh& mesh, float dt)
 				glm::vec3 norm = GetCollisionNorm(colPos, sphere.c);
 				float d = GetDFromPlane(colPos, norm);
 				iPos = mirror_point(norm.x, norm.y, norm.z, d, iPos.x, iPos.y, iPos.z);
-				ReboundPlane(mesh.positions[i], mesh.celerities[i], norm, d);
+				ReboundPlane(mesh.positions[i], iPos, mesh.celerities[i], norm, d, dt);
 			}
 
 			//Collision Walls
@@ -33,11 +33,26 @@ void Verlet::Update(Mesh& mesh, float dt)
 				if ((glm::dot(box.norms[p], iPos) + box.d[p]) * (glm::dot(box.norms[p], mesh.positions[i]) + box.d[p]) <= 0)
 				{
 					iPos = mirror_point(box.norms[p].x, box.norms[p].y, box.norms[p].z, box.d[p], iPos.x, iPos.y, iPos.z);
-					ReboundPlane(mesh.positions[i], mesh.celerities[i], box.norms[p], box.d[p]);
+					ReboundPlane(mesh.positions[i], iPos, mesh.celerities[i], box.norms[p], box.d[p], dt);
 				}
 			}
 		}
 
 		mesh.positionsBefore[i] = iPos;
 	}
+}
+
+void Verlet::ReboundPlane(glm::vec3& p, glm::vec3& p2, glm::vec3& v, glm::vec3 n, float d, float dt)
+{
+	p -= (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
+	v -= (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
+
+	if (glm::dot(n, p) + d == 0.f) p += n * 0.001f;
+
+	glm::vec3 vN = glm::dot(n, v) * n;
+	glm::vec3 vT = v - vN;
+
+	v = v - frictionCoefficient * vT;
+
+	p2 = v * dt + p;
 }

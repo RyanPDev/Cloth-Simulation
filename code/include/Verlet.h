@@ -9,4 +9,5 @@ public:
 	Verlet(glm::vec3, float, float, float, bool);
 
 	void Update(Mesh&, float);
+	void ReboundPlane(glm::vec3&, glm::vec3&, glm::vec3&, glm::vec3, float, float);
 };
