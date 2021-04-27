@@ -60,7 +60,7 @@ float friction;
 void ResetSimulation()
 {
 	timer = 0;
-	std::uniform_real_distribution<double> radius(1, 3);
+	std::uniform_real_distribution<double> radius(1, 2);
 	r = radius(gen);
 	std::uniform_real_distribution<double> centerX(-5 + r, 5 - r);
 	std::uniform_real_distribution<double> centerY(r, 9.5 - r);
