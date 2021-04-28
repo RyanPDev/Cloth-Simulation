@@ -43,9 +43,10 @@ void Verlet::ReboundPlane(glm::vec3& p, glm::vec3& p2, glm::vec3& v, glm::vec3 n
 {
 	p = p - (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
 	p2 = p2 - (1 + reboundCoefficient) * (glm::dot(n, p2) + d) * n;
-	v = (p - p2) / dt; //--> Recalculem la velocitat en el rebot
 
 	if (glm::dot(n, p) + d == 0.f) p += n * 0.001f;
+	
+	v = (p - p2) / dt; //--> Recalculem la velocitat en el rebot
 
 	glm::vec3 vN = glm::dot(n, v) * n;
 	glm::vec3 vT = v - vN;
