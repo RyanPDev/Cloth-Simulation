@@ -13,7 +13,8 @@ void Verlet::Update(Mesh& mesh, float dt) //--> Update del Verlet Solver
 		if (glm::distance(iPos, mesh.positions[i]) > (mesh.LStretch * 0.1))
 			mesh.positions[i] = iPos + glm::normalize(mesh.positions[i] - iPos) * (mesh.LStretch * 0.1f);
 
-		mesh.celerities[i] = (mesh.positions[i] - iPos) / dt;
+		mesh.celerities[i] = (mesh.positions[i] - iPos) / dt; //--> Càlcul de la velocitat (sense rebot)
+
 		if (mesh.useCollision) //--> Booleana per controlar si es calculen col·lisions en la simulació o no
 		{
 			//Collision Sphere
@@ -42,7 +43,7 @@ void Verlet::ReboundPlane(glm::vec3& p, glm::vec3& p2, glm::vec3& v, glm::vec3 n
 {
 	p = p - (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
 	p2 = p2 - (1 + reboundCoefficient) * (glm::dot(n, p2) + d) * n;
-	v = (p - p2) / dt;
+	v = (p - p2) / dt; //--> Recalculem la velocitat en el rebot
 
 	if (glm::dot(n, p) + d == 0.f) p += n * 0.001f;
 
@@ -50,5 +51,5 @@ void Verlet::ReboundPlane(glm::vec3& p, glm::vec3& p2, glm::vec3& v, glm::vec3 n
 	glm::vec3 vT = v - vN;
 
 	v = v - frictionCoefficient * vT;
-	p2 = -v * dt + p;
+	p2 = -v * dt + p; //--> Rectifiquem la posició anterior respecte la fricció prèviament calculada
 }
