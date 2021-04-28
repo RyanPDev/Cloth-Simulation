@@ -10,9 +10,12 @@ bendDamping(50), width(_width), height(_height), initPos(_initPos), LStretch(_st
 {
 	LShear = Pitagoras(LStretch, LStretch);
 	LBending = LStretch * 2;
+	InitMesh();
+}
 
-	initPos.x = -_stretch * width / 2 + _stretch / 2;
-
+void Mesh::InitMesh()
+{
+	initPos.x = -LStretch * width / 2 + LStretch / 2;
 	for (int row = 0; row < height; row++) // Inicialitzem la Mesh
 	{
 		for (int col = 0; col < width; col++)

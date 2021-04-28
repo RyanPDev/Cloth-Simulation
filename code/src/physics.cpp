@@ -69,7 +69,7 @@ void ResetSimulation()
 	rebound = solver->reboundCoefficient;
 	friction = solver->frictionCoefficient;
 	useSphereCollision = solver->useSphereCollision;
-	mesh = Mesh(ClothMesh::numCols, ClothMesh::numRows, glm::vec3(-2.8, 9.5, 4), mesh.LStretch, mesh.useCollision);
+	mesh.InitMesh();
 	delete solver;
 	if (usingVerlet) solver = new Verlet(sphereC, r, rebound, friction, useSphereCollision);
 	else solver = new Euler(sphereC, r, rebound, friction, useSphereCollision);

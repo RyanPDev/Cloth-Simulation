@@ -41,7 +41,8 @@ void Verlet::Update(Mesh& mesh, float dt) //--> Update del Verlet Solver
 void Verlet::ReboundPlane(glm::vec3& p, glm::vec3& p2, glm::vec3& v, glm::vec3 n, float d, float dt) 
 {
 	p = p - (1 + reboundCoefficient) * (glm::dot(n, p) + d) * n;
-	v = v - (1 + reboundCoefficient) * (glm::dot(n, v)) * n;
+	p2 = p2 - (1 + reboundCoefficient) * (glm::dot(n, p2) + d) * n;
+	v = (p - p2) / dt;
 
 	if (glm::dot(n, p) + d == 0.f) p += n * 0.001f;
 
@@ -50,5 +51,4 @@ void Verlet::ReboundPlane(glm::vec3& p, glm::vec3& p2, glm::vec3& v, glm::vec3 n
 
 	v = v - frictionCoefficient * vT;
 	p2 = -v * dt + p;
-	p2 = p2 - (1 + reboundCoefficient) * (glm::dot(n, p2) + d) * n;
 }
