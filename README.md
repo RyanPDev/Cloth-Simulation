@@ -1,3 +1,3 @@
 # Cloth-Simulation
 
-University Mechanics Project by Ryan Palazón & Marc Romera
+University Mechanics Project C++/SDL by Ryan Palazón & Marc Romera
